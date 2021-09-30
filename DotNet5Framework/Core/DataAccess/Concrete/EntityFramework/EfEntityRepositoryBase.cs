@@ -107,6 +107,17 @@ namespace Core.DataAccess.Concrete.EntityFramework
 
         }
 
+        public IEnumerable<TEntity> GetListForPaggingOrderByDescending(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null)
+        {
+            using (TContext context = new TContext())
+            {
+                return predicate == null
+                    ? context.Set<TEntity>().OrderByDescending(orderByPredicate).Skip((pageNumber * pageSize) - pageSize).Take(pageSize).ToList()
+                    : context.Set<TEntity>().OrderByDescending(orderByPredicate).Where(predicate).Skip((pageNumber * pageSize) - pageSize).Take(pageSize).ToList();
+            }
+
+        }
+
         public TEntity Update(TEntity entity)
         {
             using (TContext context = new TContext())
@@ -199,6 +210,17 @@ namespace Core.DataAccess.Concrete.EntityFramework
                 return predicate == null
                     ? await context.Set<TEntity>().Skip((pageNumber * pageSize) - pageSize).Take(pageSize).ToListAsync()
                     : await context.Set<TEntity>().Skip((pageNumber * pageSize) - pageSize).Take(pageSize).Where(predicate).ToListAsync();
+            }
+
+        }
+
+        public async Task<IEnumerable<TEntity>> GetListForPaggingOrderByDescendingAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null)
+        {
+            using (TContext context = new TContext())
+            {
+                return predicate == null
+                    ? await context.Set<TEntity>().OrderByDescending(orderByPredicate).Skip((pageNumber * pageSize) - pageSize).Take(pageSize).ToListAsync()
+                    : await context.Set<TEntity>().OrderByDescending(orderByPredicate).Where(predicate).Skip((pageNumber * pageSize) - pageSize).Take(pageSize).ToListAsync();
             }
 
         }
