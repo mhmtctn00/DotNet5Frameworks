@@ -12,7 +12,15 @@ namespace Core.Utilities.Results.Concrete
         {
         }
 
+        public SuccessResult(int statusCode) : base(true, statusCode)
+        {
+        }
+
         public SuccessResult(string message) : base(true, message)
+        {
+        }
+
+        public SuccessResult(int statusCode, string message) : base(true, statusCode, message)
         {
         }
     }

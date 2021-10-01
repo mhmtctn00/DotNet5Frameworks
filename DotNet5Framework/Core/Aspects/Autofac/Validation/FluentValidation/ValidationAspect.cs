@@ -9,7 +9,7 @@ using Core.Utilities.Interceptors;
 using Core.Utilities.Messages;
 using FluentValidation;
 
-namespace Core.Aspects.Autofac.Validation
+namespace Core.Aspects.Autofac.Validation.FluentValidation
 {
     public class ValidationAspect : MethodInterception
     {
@@ -18,7 +18,7 @@ namespace Core.Aspects.Autofac.Validation
         {
             if (!typeof(IValidator).IsAssignableFrom(validatorType))
             {
-                throw new System.Exception(AspectMessages.WrongValidationType);
+                throw new Exception(AspectMessages.WrongValidationType);
             }
 
             _validatorType = validatorType;

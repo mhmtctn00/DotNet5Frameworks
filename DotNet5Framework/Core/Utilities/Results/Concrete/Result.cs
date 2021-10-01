@@ -13,12 +13,22 @@ namespace Core.Utilities.Results.Concrete
         {
             Status = status;
         }
+        public Result(bool status, int statusCode)
+        {
+            Status = status;
+            ResultCode = statusCode;
+        }
         public Result(bool status, string message) : this(status)
+        {
+            Message = message;
+        }
+        public Result(bool status, int statusCode, string message) : this(status, statusCode)
         {
             Message = message;
         }
 
         public bool Status { get; }
+        public int ResultCode { get; } = 0;
         public string Message { get; }
 
 

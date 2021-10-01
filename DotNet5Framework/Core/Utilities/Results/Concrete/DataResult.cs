@@ -13,8 +13,17 @@ namespace Core.Utilities.Results.Concrete
         {
             Data = data;
         }
+        public DataResult(T data, bool status, int statusCode) : base(status, statusCode)
+        {
+            Data = data;
+        }
 
         public DataResult(T data, bool status, string message) : base(status, message)
+        {
+            Data = data;
+        }
+
+        public DataResult(T data, bool status, int statusCode, string message) : base(status, statusCode, message)
         {
             Data = data;
         }

@@ -9,6 +9,7 @@ namespace Core.Utilities.Results.Abstract
     public interface IResult
     {
         bool Status { get; }
+        int ResultCode { get; }
         string Message { get; }
     }
 }

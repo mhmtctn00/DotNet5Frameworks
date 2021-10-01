@@ -10,13 +10,8 @@ namespace Core.Extensions
     {
         public static void AddDifferentOnes<T>(this List<T> source, List<T> addedCollection)
         {
-            foreach (var item in addedCollection)
-            {
-                if (!source.Contains(item))
-                {
-                    source.Add(item);
-                }
-            }
+            var list = addedCollection.Where(ac => !source.Contains(ac)).ToList();
+            source.AddRange(list);
         }
         public static void AddDifferentOne<T>(this List<T> source, T addedItem)
         {

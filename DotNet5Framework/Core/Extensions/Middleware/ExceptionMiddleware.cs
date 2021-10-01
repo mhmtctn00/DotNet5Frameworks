@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Extensions
+namespace Core.Extensions.Middleware
 {
     public class ExceptionMiddleware
     {

@@ -6,7 +6,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.SMTP
+namespace Core.Utilities.Notification.SMTP
 {
     public class MailHelper
     {

@@ -87,7 +87,7 @@ namespace DotNet5Framework.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DotNet5Framework.API v1"));
             }
 
-            app.ConfigureCustomExceptionMiddleware();
+            app.ConfigureCustomMiddlewares();
 
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 

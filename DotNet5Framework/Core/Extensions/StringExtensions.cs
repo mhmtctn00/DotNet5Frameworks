@@ -107,5 +107,28 @@ namespace Core.Extensions
             return false;
         }
 
+        public static string SplitAndRemove(this string source, string splitValue, int index)
+        {
+            if (string.IsNullOrEmpty(source))
+                return source;
+
+            var strList = source.Split(splitValue).ToList();
+            if (strList.Count <= 0)
+                return source;
+
+            if (index < strList.Count)
+                strList.RemoveAt(index);
+
+            var resp = "";
+            for (int i = 0; i < strList.Count; i++)
+            {
+                resp += strList[i];
+                if (i < strList.Count - 1)
+                    resp += splitValue;
+            }
+
+            return resp;
+        }
+
     }
 }
