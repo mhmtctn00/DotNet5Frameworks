@@ -2,7 +2,8 @@
 using Autofac.Extras.DynamicProxy;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
-using Core.Utilities.Security.Jwt;
+using Core.Utilities.Security.Authorization;
+using Core.Utilities.Security.Authorization.JWT;
 using DotNet5Framework.Business.Abstract;
 using DotNet5Framework.Business.Concrete;
 using DotNet5Framework.DataAccess.Abstract;

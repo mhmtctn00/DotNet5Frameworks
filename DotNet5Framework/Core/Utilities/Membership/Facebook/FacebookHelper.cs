@@ -1,4 +1,4 @@
-﻿using Core.Utilities.HTTP;
+﻿using Core.Utilities.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Core.Utilities.Membership.Facebook
         {
             try
             {
-                var tokenInfoStr = HttpHelper.Get($"{verifyIdTokenUrl}{token}");
+                var tokenInfoStr = HttpHelper.HttpGetRequest($"{verifyIdTokenUrl}{token}");
                 var tokenInfoObj = JsonConvert.DeserializeObject<FbTokenInfo>(tokenInfoStr);
                 return tokenInfoObj;
             }
@@ -28,7 +28,7 @@ namespace Core.Utilities.Membership.Facebook
         {
             try
             {
-                var tokenInfoStr = HttpHelper.Get($"{verifyIdTokenUrl}{token}");
+                var tokenInfoStr = HttpHelper.HttpGetRequest($"{verifyIdTokenUrl}{token}");
                 var tokenInfoObj = JsonConvert.DeserializeObject<FbTokenInfo>(tokenInfoStr);
                 if (!tokenInfoObj.Email.Equals(email))
                     return false;

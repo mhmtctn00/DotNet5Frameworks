@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using Core.Entities.Abstract;
 using DotNet5Framework.Entities.Dtos.Category;
 using System;
 using System.Collections.Generic;

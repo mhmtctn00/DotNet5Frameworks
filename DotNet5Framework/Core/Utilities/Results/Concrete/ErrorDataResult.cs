@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Utilities.Results.ComplexTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,30 +9,30 @@ namespace Core.Utilities.Results.Concrete
 {
     public class ErrorDataResult<T> : DataResult<T>
     {
-        public ErrorDataResult(T data) : base(data, false)
+        public ErrorDataResult(T data) : base(data, ResultStatus.Error)
         {
         }
-        public ErrorDataResult(T data, int statusCode) : base(data, false, statusCode)
-        {
-        }
-
-        public ErrorDataResult(T data, string message) : base(data, false, message)
+        public ErrorDataResult(T data, int statusCode) : base(data, ResultStatus.Error, statusCode)
         {
         }
 
-        public ErrorDataResult(T data, int statusCode, string message) : base(data, false, statusCode, message)
+        public ErrorDataResult(T data, string message) : base(data, ResultStatus.Error, message)
         {
         }
-        public ErrorDataResult(int statusCode) : base(default, false, statusCode)
+
+        public ErrorDataResult(T data, int statusCode, string message) : base(data, ResultStatus.Error, statusCode, message)
         {
         }
-        public ErrorDataResult(string message) : base(default, false, message)
+        public ErrorDataResult(int statusCode) : base(default, ResultStatus.Error, statusCode)
         {
         }
-        public ErrorDataResult(int statusCode, string message) : base(default, false, statusCode, message)
+        public ErrorDataResult(string message) : base(default, ResultStatus.Error, message)
         {
         }
-        public ErrorDataResult() : base(default, false)
+        public ErrorDataResult(int statusCode, string message) : base(default, ResultStatus.Error, statusCode, message)
+        {
+        }
+        public ErrorDataResult() : base(default, ResultStatus.Error)
         {
         }
     }

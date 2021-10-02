@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Security.RSA
+namespace Core.Utilities.Security.Cryptography.Rsa
 {
-    public class RSA
+    public class RsaHelper
     {
         public static string Encrypt(string textToEncrypt)
         {

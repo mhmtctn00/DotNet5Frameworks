@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.ComplexTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +10,25 @@ namespace Core.Utilities.Results.Concrete
 {
     public class Result : IResult
     {
-        public Result(bool status)
+        public Result(ResultStatus status)
         {
             Status = status;
         }
-        public Result(bool status, int statusCode)
+        public Result(ResultStatus status, int statusCode)
         {
             Status = status;
             ResultCode = statusCode;
         }
-        public Result(bool status, string message) : this(status)
+        public Result(ResultStatus status, string message) : this(status)
         {
             Message = message;
         }
-        public Result(bool status, int statusCode, string message) : this(status, statusCode)
+        public Result(ResultStatus status, int statusCode, string message) : this(status, statusCode)
         {
             Message = message;
         }
 
-        public bool Status { get; }
+        public ResultStatus Status { get; }
         public int ResultCode { get; } = 0;
         public string Message { get; }
 

@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using Core.Entities.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ namespace Core.Entities.Concrete
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string UserType { get; set; }
         public int RoleId { get; set; }
     }
 }
