@@ -1,18 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 using System.Threading;
-
+using System.Threading.Tasks;
 
 namespace Core.Utilities.Helpers
 {
+    public enum FileTypes
+    {
+        Image = 0,
+        File = 1,
+        ImageOrFile = 2
+    }
+
     class FileHelper
     {
-        public static void ResizeImage(double scaleFactor, string path, string destPath)
+        private static readonly List<string> imageFormats = new() { ".jpeg", ".jpg", ".png" };
+        private static readonly List<string> fileFormats = new() { ".pdf", ".docx", ".rtf", ".doc" };
+        private static readonly string rootPath = Directory.GetCurrentDirectory();
+
+
+        public static void ResizeImage(double scaleFactor, string srcPath, string destPath)
         {
-            var image = Image.FromFile(path);
+            var image = Image.FromFile(srcPath);
             var newWidth = (int)(image.Width * scaleFactor);
             var newHeight = (int)(image.Height * scaleFactor);
             var thumbnailBitmap = new Bitmap(newWidth, newHeight);
@@ -30,9 +46,11 @@ namespace Core.Utilities.Helpers
             thumbnailBitmap.Dispose();
             image.Dispose();
         }
-        public static void ResizeImagesWithMaxSize(List<string> paths, int maxSize = 500)
+
+        // Dosya yolları dışarıadn dinamik alınacak.
+        public static void ResizeImagesWithMaxSize(List<string> srcPhats, int maxSize = 500)
         {
-            foreach (var path in paths)
+            foreach (var path in srcPhats)
             {
                 var destPath = $"{Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)}/sent/{path.Split('\\')[path.Split('\\').Length - 1]}";
                 int fileSize = (int)new FileInfo(path).Length / 1024;
@@ -64,24 +82,128 @@ namespace Core.Utilities.Helpers
                 Thread.Sleep(100);
             }
         }
-        public static void Copy(string inputFilePath, string outputFilePath)
+
+        public static async Task CopyAsync(string srcPath, string destPath)
         {
             int bufferSize = 1024 * 1024;
             Thread.Sleep(322);
-            using (FileStream fileStream = new FileStream(outputFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+            using (FileStream fileStream = new FileStream(destPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
             //using (FileStream fs = File.Open(<file-path>, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                FileStream fs = new FileStream(inputFilePath, FileMode.Open, FileAccess.ReadWrite);
+                FileStream fs = new FileStream(srcPath, FileMode.Open, FileAccess.ReadWrite);
                 fileStream.SetLength(fs.Length);
                 int bytesRead = -1;
                 byte[] bytes = new byte[bufferSize];
 
                 while ((bytesRead = fs.Read(bytes, 0, bufferSize)) > 0)
                 {
-                    fileStream.Write(bytes, 0, bytesRead);
+                    await fileStream.WriteAsync(bytes, 0, bytesRead);
                 }
                 fs.Close();
             }
+        }
+
+        //Hedef dosyaya istenilen isim verilebilmeli. Suan random değer atıyor.
+        public static async Task<string> CopyAsync(IFormFile file, string destFolderName, FileTypes type)
+        {
+            var filePath = "";
+            var fileExtension = $".{file.ContentType.Split("/")[1]}";
+            if (type == FileTypes.Image)
+                if (!imageFormats.Any(x => x == fileExtension))
+                {
+                    return "unsupported_file_format_type";
+                }
+            if (type == FileTypes.File)
+                if (!fileFormats.Any(x => x == fileExtension))
+                {
+                    return "unsupported_file_format_type";
+                }
+            if (type == FileTypes.ImageOrFile)
+                if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
+                {
+                    return "unsupported_file_format_type";
+                }
+
+
+            var fName = "";
+            if (imageFormats.Any(x => x == fileExtension))
+                fName = Path.Combine("Images", destFolderName);
+            if (fileFormats.Any(x => x == fileExtension))
+                fName = Path.Combine("Files", destFolderName);
+
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), fName);
+
+            if (!Directory.Exists(pathToSave))
+            {
+                Directory.CreateDirectory(pathToSave);
+            }
+
+            if (file.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + fileExtension;
+                var fullPath = Path.Combine(pathToSave, fileName);
+                var dbPath = Path.Combine(fName, fileName);
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                filePath = dbPath;
+            }
+            return filePath;
+        }
+
+        //Hedef dosyaya istenilen isim verilebilmeli. Suan random değer atıyor.
+        public static async Task<string> CopyAsync(List<IFormFile> files, string destFolderName, FileTypes type)
+        {
+            var filePaths = new List<string>();
+            foreach (var file in files)
+            {
+                var fileExtension = $".{file.ContentType.Split("/")[1]}";
+                if (type == FileTypes.Image)
+                    if (!imageFormats.Any(x => x == fileExtension))
+                    {
+                        return "unsupported_file_format_type";
+                    }
+                if (type == FileTypes.File)
+                    if (!fileFormats.Any(x => x == fileExtension))
+                    {
+                        return "unsupported_file_format_type";
+                    }
+                if (type == FileTypes.ImageOrFile)
+                    if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
+                    {
+                        return "unsupported_file_format_type";
+                    }
+            }
+            foreach (var file in files)
+            {
+                var fileExtension = $".{file.ContentType.Split("/")[1]}";
+                var fName = "";
+                if (imageFormats.Any(x => x == fileExtension))
+                    fName = Path.Combine("Images", destFolderName);
+                if (fileFormats.Any(x => x == fileExtension))
+                    fName = Path.Combine("Files", destFolderName);
+
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), fName);
+
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                if (file.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + fileExtension;
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(fName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    filePaths.Add(dbPath);
+                }
+            }
+            return JsonConvert.SerializeObject(filePaths);
         }
     }
 }
