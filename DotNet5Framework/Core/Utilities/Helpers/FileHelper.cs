@@ -12,14 +12,7 @@ using System.Threading.Tasks;
 
 namespace Core.Utilities.Helpers
 {
-    public enum FileTypes
-    {
-        Image = 0,
-        File = 1,
-        ImageOrFile = 2
-    }
-
-    class FileHelper
+    public class FileHelper
     {
         private static readonly List<string> imageFormats = new() { ".jpeg", ".jpg", ".png" };
         private static readonly List<string> fileFormats = new() { ".pdf", ".docx", ".rtf", ".doc" };
@@ -104,25 +97,14 @@ namespace Core.Utilities.Helpers
         }
 
         //Hedef dosyaya istenilen isim verilebilmeli. Suan random değer atıyor.
-        public static async Task<string> CopyAsync(IFormFile file, string destFolderName, FileTypes type)
+        public static async Task<string> CopyAsync(IFormFile file, string destFolderName)
         {
             var filePath = "";
             var fileExtension = $".{file.ContentType.Split("/")[1]}";
-            if (type == FileTypes.Image)
-                if (!imageFormats.Any(x => x == fileExtension))
-                {
-                    return "unsupported_file_format_type";
-                }
-            if (type == FileTypes.File)
-                if (!fileFormats.Any(x => x == fileExtension))
-                {
-                    return "unsupported_file_format_type";
-                }
-            if (type == FileTypes.ImageOrFile)
-                if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
-                {
-                    return "unsupported_file_format_type";
-                }
+            if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
+            {
+                return "unsupported_file_format_type";
+            }
 
 
             var fName = "";
@@ -153,27 +135,16 @@ namespace Core.Utilities.Helpers
         }
 
         //Hedef dosyaya istenilen isim verilebilmeli. Suan random değer atıyor.
-        public static async Task<string> CopyAsync(List<IFormFile> files, string destFolderName, FileTypes type)
+        public static async Task<string> CopyAsync(List<IFormFile> files, string destFolderName)
         {
             var filePaths = new List<string>();
             foreach (var file in files)
             {
                 var fileExtension = $".{file.ContentType.Split("/")[1]}";
-                if (type == FileTypes.Image)
-                    if (!imageFormats.Any(x => x == fileExtension))
-                    {
-                        return "unsupported_file_format_type";
-                    }
-                if (type == FileTypes.File)
-                    if (!fileFormats.Any(x => x == fileExtension))
-                    {
-                        return "unsupported_file_format_type";
-                    }
-                if (type == FileTypes.ImageOrFile)
-                    if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
-                    {
-                        return "unsupported_file_format_type";
-                    }
+                if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
+                {
+                    return "unsupported_file_format_type";
+                }
             }
             foreach (var file in files)
             {
