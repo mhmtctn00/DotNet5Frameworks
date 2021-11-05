@@ -96,7 +96,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
 
         }
 
-        public IEnumerable<TEntity> GetListForPagging(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null)
+        public IEnumerable<TEntity> GetListPaginated(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null)
         {
             using (TContext context = new TContext())
             {
@@ -107,7 +107,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
 
         }
 
-        public IEnumerable<TEntity> GetListForPaggingOrderByDescending(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null)
+        public IEnumerable<TEntity> GetListPaginatedInOrderByDescending(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null)
         {
             using (TContext context = new TContext())
             {
@@ -203,7 +203,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
 
         }
 
-        public async Task<IEnumerable<TEntity>> GetListForPaggingAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null)
+        public async Task<IEnumerable<TEntity>> GetListPaginatedAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null)
         {
             using (TContext context = new TContext())
             {
@@ -214,7 +214,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
 
         }
 
-        public async Task<IEnumerable<TEntity>> GetListForPaggingOrderByDescendingAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null)
+        public async Task<IEnumerable<TEntity>> GetListPaginatedInOrderByDescendingAsync(int pageNumber, int pageSize, Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null)
         {
             using (TContext context = new TContext())
             {

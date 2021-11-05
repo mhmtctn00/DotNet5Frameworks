@@ -12,12 +12,21 @@ namespace Core.Extensions
     {
         public static void AddEmail(this ICollection<Claim> claims, string email)
         {
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, email));
+            claims.Add(new Claim("email", email));
         }
 
-        public static void AddName(this ICollection<Claim> claims, string name)
+        public static void AddFirstName(this ICollection<Claim> claims, string firstname)
         {
-            claims.Add(new Claim("name", name));
+            claims.Add(new Claim("firstname", firstname));
+        }
+
+        public static void AddLastName(this ICollection<Claim> claims, string lastname)
+        {
+            claims.Add(new Claim("lastname", lastname));
+        }
+        public static void AddRememberMe(this ICollection<Claim> claims, string rememberMe)
+        {
+            claims.Add(new Claim("remember_me", rememberMe));
         }
 
         public static void AddNameIdentifier(this ICollection<Claim> claims, string nameIdentifier)
@@ -25,9 +34,9 @@ namespace Core.Extensions
             claims.Add(new Claim("name_identifier", nameIdentifier));
         }
 
-        public static void AddRoles(this ICollection<Claim> claims, string[] roles)
+        public static void AddRoles(this ICollection<Claim> claims, List<string> roles)
         {
-            roles.ToList().ForEach(role => claims.Add(new Claim("roles", role)));
+            roles.ForEach(role => claims.Add(new Claim("roles", role)));
         }
     }
 }

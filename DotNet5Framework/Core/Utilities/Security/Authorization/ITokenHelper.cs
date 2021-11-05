@@ -11,6 +11,8 @@ namespace Core.Utilities.Security.Authorization
 {
     public interface ITokenHelper
     {
-        AccessToken CreateToken(User user, IDataResult<IList<Role>> roles);
+        AccessToken CreateToken(User user, List<Role> roles, bool rememberMe = false);
+        bool VerifyJWT(string token);
+        Jwt GetJwt(string token);
     }
 }
