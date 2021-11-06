@@ -26,7 +26,7 @@ namespace Core.Aspects.Autofac.Logging
         protected override void OnSuccess(IInvocation invocation)
         {
             LogDetail logDetailWithException = GetLogDetail(invocation);
-            _loggerService.Error(logDetailWithException);
+            _loggerService.Info(logDetailWithException);
         }
 
 

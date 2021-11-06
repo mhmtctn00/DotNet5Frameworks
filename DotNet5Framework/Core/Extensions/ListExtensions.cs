@@ -10,8 +10,13 @@ namespace Core.Extensions
     {
         public static void AddDifferentOnes<T>(this List<T> source, List<T> addedCollection)
         {
-            var list = addedCollection.Where(ac => !source.Contains(ac)).ToList();
-            source.AddRange(list);
+            foreach (var item in addedCollection)
+            {
+                if (!source.Contains(item))
+                {
+                    source.Add(item);
+                }
+            }
         }
         public static void AddDifferentOne<T>(this List<T> source, T addedItem)
         {
@@ -19,6 +24,18 @@ namespace Core.Extensions
             {
                 source.Add(addedItem);
             }
+        }
+        public static List<T> ToListWithoutTheSameOnes<T>(this List<T> source)
+        {
+            List<T> items = new List<T>();
+            foreach (var item in source)
+            {
+                if (!items.Contains(item))
+                {
+                    items.Add(item);
+                }
+            }
+            return items;
         }
     }
 }

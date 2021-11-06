@@ -107,11 +107,14 @@ namespace Core.Utilities.Helpers
             var filePath = "";
             var fileExtension = file.ContentType != null ? $".{file.ContentType.Split("/")[1]}" : $".{file.FileName.Split(".")[file.FileName.Split(".").Length - 1]}".ToLower();
 
-            if (!(fileFormatDictionary.TryGetValue(fileExtension, out fileExtension) || imageFormats.Any(x => x == fileExtension)))
+            fileFormatDictionary.TryGetValue(fileExtension, out string fileExtension2);
+
+            if (!imageFormats.Any(x => x == fileExtension) && string.IsNullOrEmpty(fileExtension2))
             {
                 return "error";
             }
-
+            if (!string.IsNullOrEmpty(fileExtension2))
+                fileExtension = fileExtension2;
 
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), destFolderName);
             pathToSave = destFolderName;//If FileAPI move to another server these codes won't be necessary
@@ -142,7 +145,7 @@ namespace Core.Utilities.Helpers
             {
                 var fileExtension = file.ContentType != null ? $".{file.ContentType.Split("/")[1]}" : $".{file.FileName.Split(".")[^1]}".ToLower();
 
-                if (!(fileFormatDictionary.TryGetValue(fileExtension, out fileExtension) || imageFormats.Any(x => x == fileExtension)))
+                if (!(imageFormats.Any(x => x == fileExtension) || fileFormatDictionary.TryGetValue(fileExtension, out fileExtension)))
                 {
                     return "error";
                 }
@@ -150,8 +153,6 @@ namespace Core.Utilities.Helpers
             foreach (var file in files)
             {
                 var fileExtension = file.ContentType != null ? $".{file.ContentType.Split("/")[1]}" : $".{file.FileName.Split(".")[^1]}".ToLower();
-                if (!fileFormatDictionary.TryGetValue(fileExtension, out fileExtension))
-                    return "error";
 
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), destFolderName);
                 pathToSave = destFolderName;//If FileAPI move to another server these codes won't be necessary

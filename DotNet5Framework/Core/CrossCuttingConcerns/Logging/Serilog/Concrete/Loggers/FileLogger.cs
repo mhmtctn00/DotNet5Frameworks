@@ -13,9 +13,11 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
         //private readonly string LogFolderPath = Directory.GetParent(Directory.GetCurrentDirectory()) + @"\LogFiles\"; // API's Parent Path = YourServicePlatform(Root Folder) + /LogFiles/
         private static readonly object _lock = new object();
         private Logger _logger;
-
+        JsonSerializerSettings settings;
         public FileLogger()
         {
+            settings = new JsonSerializerSettings();
+            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             ControlDirectories(LogFolderPath);
         }
 
@@ -73,15 +75,15 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
          */
 
 
-        public override void Info(object logMessage) => GetLogger().Information(JsonConvert.SerializeObject(logMessage));
+        public override void Info(object logMessage) => GetLogger().Information(JsonConvert.SerializeObject(logMessage, settings));
 
-        public override void Error(object logMessage) => GetLogger().Error(JsonConvert.SerializeObject(logMessage));
+        public override void Error(object logMessage) => GetLogger().Error(JsonConvert.SerializeObject(logMessage, settings));
 
-        public override void Fatal(object logMessage) => GetLogger().Fatal(JsonConvert.SerializeObject(logMessage));
+        public override void Fatal(object logMessage) => GetLogger().Fatal(JsonConvert.SerializeObject(logMessage, settings));
 
-        public override void Warning(object logMessage) => GetLogger().Warning(JsonConvert.SerializeObject(logMessage));
+        public override void Warning(object logMessage) => GetLogger().Warning(JsonConvert.SerializeObject(logMessage, settings));
 
-        public override void Debug(object logMessage) => GetLogger().Debug(JsonConvert.SerializeObject(logMessage));
+        public override void Debug(object logMessage) => GetLogger().Debug(JsonConvert.SerializeObject(logMessage, settings));
 
     }
 }
