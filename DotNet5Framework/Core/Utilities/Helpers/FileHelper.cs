@@ -15,7 +15,12 @@ namespace Core.Utilities.Helpers
     public class FileHelper
     {
         private static readonly List<string> imageFormats = new() { ".jpeg", ".jpg", ".png" };
-        private static readonly List<string> fileFormats = new() { ".pdf", ".docx", ".rtf", ".doc" };
+        private static readonly Dictionary<string, string> fileFormatDictionary = new Dictionary<string, string>{
+            { ".msword", ".doc" },
+            { ".vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx" },
+            { ".pdf", ".pdf" },
+            { ".rtf", ".rtf" }
+        };
         private static readonly string rootPath = Directory.GetCurrentDirectory();
 
 
@@ -100,21 +105,16 @@ namespace Core.Utilities.Helpers
         public static async Task<string> CopyAsync(IFormFile file, string destFolderName)
         {
             var filePath = "";
-            var fileExtension = $".{file.ContentType.Split("/")[1]}";
-            if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
+            var fileExtension = file.ContentType != null ? $".{file.ContentType.Split("/")[1]}" : $".{file.FileName.Split(".")[file.FileName.Split(".").Length - 1]}".ToLower();
+
+            if (!(fileFormatDictionary.TryGetValue(fileExtension, out fileExtension) || imageFormats.Any(x => x == fileExtension)))
             {
-                return "unsupported_file_format_type";
+                return "error";
             }
 
 
-            var fName = "";
-            if (imageFormats.Any(x => x == fileExtension))
-                fName = Path.Combine("Images", destFolderName);
-            if (fileFormats.Any(x => x == fileExtension))
-                fName = Path.Combine("Files", destFolderName);
-
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), fName);
-
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), destFolderName);
+            pathToSave = destFolderName;//If FileAPI move to another server these codes won't be necessary
             if (!Directory.Exists(pathToSave))
             {
                 Directory.CreateDirectory(pathToSave);
@@ -124,7 +124,7 @@ namespace Core.Utilities.Helpers
             {
                 var fileName = Guid.NewGuid().ToString() + fileExtension;
                 var fullPath = Path.Combine(pathToSave, fileName);
-                var dbPath = Path.Combine(fName, fileName);
+                var dbPath = Path.Combine(destFolderName, fileName);
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
@@ -140,22 +140,21 @@ namespace Core.Utilities.Helpers
             var filePaths = new List<string>();
             foreach (var file in files)
             {
-                var fileExtension = $".{file.ContentType.Split("/")[1]}";
-                if (!(fileFormats.Any(x => x == fileExtension) || imageFormats.Any(x => x == fileExtension)))
+                var fileExtension = file.ContentType != null ? $".{file.ContentType.Split("/")[1]}" : $".{file.FileName.Split(".")[^1]}".ToLower();
+
+                if (!(fileFormatDictionary.TryGetValue(fileExtension, out fileExtension) || imageFormats.Any(x => x == fileExtension)))
                 {
-                    return "unsupported_file_format_type";
+                    return "error";
                 }
             }
             foreach (var file in files)
             {
-                var fileExtension = $".{file.ContentType.Split("/")[1]}";
-                var fName = "";
-                if (imageFormats.Any(x => x == fileExtension))
-                    fName = Path.Combine("Images", destFolderName);
-                if (fileFormats.Any(x => x == fileExtension))
-                    fName = Path.Combine("Files", destFolderName);
+                var fileExtension = file.ContentType != null ? $".{file.ContentType.Split("/")[1]}" : $".{file.FileName.Split(".")[^1]}".ToLower();
+                if (!fileFormatDictionary.TryGetValue(fileExtension, out fileExtension))
+                    return "error";
 
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), fName);
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), destFolderName);
+                pathToSave = destFolderName;//If FileAPI move to another server these codes won't be necessary
 
                 if (!Directory.Exists(pathToSave))
                 {
@@ -166,7 +165,7 @@ namespace Core.Utilities.Helpers
                 {
                     var fileName = Guid.NewGuid().ToString() + fileExtension;
                     var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(fName, fileName);
+                    var dbPath = Path.Combine(destFolderName, fileName);
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
