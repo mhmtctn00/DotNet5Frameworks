@@ -1,39 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Core.Extensions
 {
-    // TODO: Class'larda çalışmıyor incele.
     public static class ListExtensions
     {
+        public static void AddDifferentOne<T>(this List<T> source, T addedItem)
+        {
+            if (typeof(T).IsValueType)
+            {
+                if (!source.Contains(addedItem))
+                {
+                    source.Add(addedItem);
+                }
+            }
+            else
+            {
+                bool isEqual = true;
+                foreach (var sourceItem in source)
+                {
+
+                    Type type = sourceItem.GetType();
+                    PropertyInfo[] props = type.GetProperties();
+
+                    bool propEquals = true;
+                    foreach (var prop in props)
+                    {
+                        if (!prop.GetValue(sourceItem).Equals(prop.GetValue(addedItem)))
+                            propEquals = false;
+                    }
+                    isEqual = propEquals;
+                    if (propEquals)
+                        break;
+                }
+                if (!isEqual)
+                {
+                    source.Add(addedItem);
+                }
+            }
+        }
+
         public static void AddDifferentOnes<T>(this List<T> source, List<T> addedCollection)
         {
             foreach (var item in addedCollection)
             {
-                if (!source.Contains(item))
-                {
-                    source.Add(item);
-                }
+                source.AddDifferentOne(item);
             }
         }
-        public static void AddDifferentOne<T>(this List<T> source, T addedItem)
-        {
-            if (!source.Contains(addedItem))
-            {
-                source.Add(addedItem);
-            }
-        }
+
         public static List<T> ToListWithoutTheSameOnes<T>(this List<T> source)
         {
             List<T> items = new List<T>();
-            foreach (var item in source)
+            if (typeof(T).IsValueType)
             {
-                if (!items.Contains(item))
+                foreach (var sourceItem in source)
                 {
-                    items.Add(item);
+                    if (!items.Contains(sourceItem))
+                    {
+                        items.Add(sourceItem);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var sourceItem in source)
+                {
+                    bool isEqual = true;
+                    if (items.Count > 0)
+                        foreach (var item in items)
+                        {
+                            Type type = item.GetType();
+                            PropertyInfo[] props = type.GetProperties();
+
+                            foreach (var prop in props)
+                            {
+                                if (prop.GetValue(sourceItem).Equals(prop.GetValue(item)))
+                                    isEqual = false;
+                            }
+                        }
+                    if (isEqual)
+                    {
+                        items.Add(sourceItem);
+                    }
                 }
             }
             return items;
