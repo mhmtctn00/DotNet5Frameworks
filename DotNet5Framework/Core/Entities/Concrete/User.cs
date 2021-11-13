@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Core.Entities.Abstract;
+using System.Collections.Generic;
 
 namespace Core.Entities.Concrete
 {

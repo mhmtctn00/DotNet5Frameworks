@@ -10,10 +10,10 @@ namespace Core.DataAccess.Abstract
     public interface IEntityRepository<T>
     {
         #region Normal Methods
-        T Get(Expression<Func<T, bool>> predicate);
-        IEnumerable<T> GetList(Expression<Func<T, bool>> predicate = null);
-        IEnumerable<T> GetListPaginated(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null);
-        IEnumerable<T> GetListPaginatedInOrderByDescending(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null, Expression<Func<T, dynamic>> orderByPredicate = null);
+        T Get(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+        IEnumerable<T> GetList(Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includeProperties);
+        IEnumerable<T> GetListPaginated(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includeProperties);
+        IEnumerable<T> GetListPaginatedInOrderByDescending(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null, Expression<Func<T, dynamic>> orderByPredicate = null, params Expression<Func<T, object>>[] includeProperties);
         T Add(T entity);
         IEnumerable<T> AddRange(IList<T> entityList);
         T Update(T entity);
@@ -25,10 +25,10 @@ namespace Core.DataAccess.Abstract
         #endregion
 
         #region Async Methods
-        Task<T> GetAsync(Expression<Func<T, bool>> predicate);
-        Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate = null);
-        Task<IEnumerable<T>> GetListPaginatedAsync(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null);
-        Task<IEnumerable<T>> GetListPaginatedInOrderByDescendingAsync(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null, Expression<Func<T, dynamic>> orderByPredicate = null);
+        Task<T> GetAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetListPaginatedAsync(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetListPaginatedInOrderByDescendingAsync(int pageNumber, int pageSize, Expression<Func<T, bool>> predicate = null, Expression<Func<T, dynamic>> orderByPredicate = null, params Expression<Func<T, object>>[] includeProperties);
         Task<T> AddAsync(T entity);
         Task<IEnumerable<T>> AddRangeAsync(IList<T> entityList);
         Task<T> UpdateAsync(T entity);

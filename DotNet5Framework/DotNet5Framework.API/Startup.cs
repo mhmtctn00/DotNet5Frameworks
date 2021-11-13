@@ -1,6 +1,9 @@
 using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.Utilities.IoC;
+using Core.Utilities.Security.Authorization;
+using Core.Utilities.Security.Encyption;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -8,19 +11,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace DotNet5Framework.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ITokenHelper tokenHelper)
         {
             Configuration = configuration;
+            this.TokenHelper = tokenHelper;
         }
 
         public IConfiguration Configuration { get; }
+        public ITokenHelper TokenHelper { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -59,6 +67,37 @@ namespace DotNet5Framework.API
             //            ValidAudience = tokenOptions.Audience,
             //            ValidateIssuerSigningKey = true,
             //            IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+            //        };
+            //        options.Events = new JwtBearerEvents
+            //        {
+            //            OnMessageReceived = context =>
+            //            {
+            //                if (context.Request.Path.Value.StartsWith("/hub"))  // SignalR için
+            //                {
+            //                    context.Request.Headers.TryGetValue("Authorization", out StringValues token);
+            //                    if (string.IsNullOrEmpty(token))
+            //                    {
+            //                        context.Request.Query.TryGetValue("access_token", out token);
+            //                        if (string.IsNullOrEmpty(token))
+            //                        {
+            //                            context.Request.Query.TryGetValue("token", out token);
+            //                        }
+            //                    }
+            //                    string tokenStr = token.ToString().Replace("Bearer", "").Trim();
+            //                    if (!TokenHelper.VerifyJWT(tokenStr))
+            //                    {
+            //                        context.Response.StatusCode = 401;
+            //                        return Task.CompletedTask;
+            //                    }
+            //                    context.Token = tokenStr;
+            //                }
+            //                return Task.CompletedTask;
+            //            },
+            //            OnAuthenticationFailed = context =>
+            //            {
+            //                var te = context.Exception;
+            //                return Task.CompletedTask;
+            //            }
             //        };
             //    });
             #endregion

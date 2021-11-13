@@ -2,7 +2,8 @@
 using Core.CrossCuttingConcerns.Caching;
 using Core.CrossCuttingConcerns.Caching.Microsoft;
 using Core.Utilities.IoC;
-using Core.Utilities.Security.Jwt;
+using Core.Utilities.Security.Authorization;
+using Core.Utilities.Security.Authorization.JWT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

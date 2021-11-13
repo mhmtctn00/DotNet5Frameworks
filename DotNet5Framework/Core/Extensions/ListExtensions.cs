@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
+    // TODO: Class'larda çalışmıyor incele.
     public static class ListExtensions
     {
         public static void AddDifferentOnes<T>(this List<T> source, List<T> addedCollection)
