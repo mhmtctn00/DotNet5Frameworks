@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Core.Extensions.Middleware;
+using Core.Extensions.Middlewares;
 using Microsoft.AspNetCore.Builder;
 
 namespace Core.Extensions

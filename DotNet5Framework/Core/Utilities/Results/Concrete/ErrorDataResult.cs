@@ -12,7 +12,7 @@ namespace Core.Utilities.Results.Concrete
         public ErrorDataResult(T data) : base(data, ResultStatus.Error)
         {
         }
-        public ErrorDataResult(T data, int statusCode) : base(data, ResultStatus.Error, statusCode)
+        public ErrorDataResult(T data, int resultCode) : base(data, ResultStatus.Error, resultCode)
         {
         }
 
@@ -20,16 +20,16 @@ namespace Core.Utilities.Results.Concrete
         {
         }
 
-        public ErrorDataResult(T data, int statusCode, string message) : base(data, ResultStatus.Error, statusCode, message)
+        public ErrorDataResult(T data, int resultCode, string message) : base(data, ResultStatus.Error, resultCode, message)
         {
         }
-        public ErrorDataResult(int statusCode) : base(default, ResultStatus.Error, statusCode)
+        public ErrorDataResult(int resultCode) : base(default, ResultStatus.Error, resultCode)
         {
         }
         public ErrorDataResult(string message) : base(default, ResultStatus.Error, message)
         {
         }
-        public ErrorDataResult(int statusCode, string message) : base(default, ResultStatus.Error, statusCode, message)
+        public ErrorDataResult(int resultCode, string message) : base(default, ResultStatus.Error, resultCode, message)
         {
         }
         public ErrorDataResult() : base(default, ResultStatus.Error)

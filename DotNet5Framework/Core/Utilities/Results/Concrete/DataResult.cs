@@ -14,7 +14,7 @@ namespace Core.Utilities.Results.Concrete
         {
             Data = data;
         }
-        public DataResult(T data, ResultStatus status, int statusCode) : base(status, statusCode)
+        public DataResult(T data, ResultStatus status, int resultCode) : base(status, resultCode)
         {
             Data = data;
         }
@@ -24,7 +24,7 @@ namespace Core.Utilities.Results.Concrete
             Data = data;
         }
 
-        public DataResult(T data, ResultStatus status, int statusCode, string message) : base(status, statusCode, message)
+        public DataResult(T data, ResultStatus status, int resultCode, string message) : base(status, resultCode, message)
         {
             Data = data;
         }

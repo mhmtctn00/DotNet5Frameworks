@@ -12,23 +12,23 @@ namespace Core.Utilities.Results.Concrete
         public WarningDataResult(T data) : base(data, ResultStatus.Warning)
         {
         }
-        public WarningDataResult(T data, int statusCode) : base(data, ResultStatus.Warning, statusCode)
+        public WarningDataResult(T data, int resultCode) : base(data, ResultStatus.Warning, resultCode)
         {
         }
 
         public WarningDataResult(T data, string message) : base(data, ResultStatus.Warning, message)
         {
         }
-        public WarningDataResult(T data, int statusCode, string message) : base(data, ResultStatus.Warning, statusCode, message)
+        public WarningDataResult(T data, int resultCode, string message) : base(data, ResultStatus.Warning, resultCode, message)
         {
         }
-        public WarningDataResult(int statusCode) : base(default, ResultStatus.Warning, statusCode)
+        public WarningDataResult(int resultCode) : base(default, ResultStatus.Warning, resultCode)
         {
         }
         public WarningDataResult(string message) : base(default, ResultStatus.Warning, message)
         {
         }
-        public WarningDataResult(int statusCode, string message) : base(default, ResultStatus.Warning, statusCode, message)
+        public WarningDataResult(int resultCode, string message) : base(default, ResultStatus.Warning, resultCode, message)
         {
         }
         public WarningDataResult() : base(default, ResultStatus.Warning)

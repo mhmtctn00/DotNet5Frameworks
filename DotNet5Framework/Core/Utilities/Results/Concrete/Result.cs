@@ -14,16 +14,16 @@ namespace Core.Utilities.Results.Concrete
         {
             Status = status;
         }
-        public Result(ResultStatus status, int statusCode)
+        public Result(ResultStatus status, int resultCode)
         {
             Status = status;
-            ResultCode = statusCode;
+            ResultCode = resultCode;
         }
         public Result(ResultStatus status, string message) : this(status)
         {
             Message = message;
         }
-        public Result(ResultStatus status, int statusCode, string message) : this(status, statusCode)
+        public Result(ResultStatus status, int resultCode, string message) : this(status, resultCode)
         {
             Message = message;
         }

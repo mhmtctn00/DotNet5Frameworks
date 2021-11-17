@@ -13,14 +13,14 @@ namespace Core.Utilities.Results.Concrete
         {
         }
 
-        public WarningResult(int statusCode) : base(ResultStatus.Warning, statusCode)
+        public WarningResult(int resultCode) : base(ResultStatus.Warning, resultCode)
         {
         }
 
         public WarningResult(string message) : base(ResultStatus.Warning, message)
         {
         }
-        public WarningResult(int statusCode, string message) : base(ResultStatus.Warning, statusCode, message)
+        public WarningResult(int resultCode, string message) : base(ResultStatus.Warning, resultCode, message)
         {
         }
     }

@@ -12,7 +12,7 @@ namespace Core.Utilities.Results.Concrete
         public SuccessDataResult(T data) : base(data, ResultStatus.Success)
         {
         }
-        public SuccessDataResult(T data, int statusCode) : base(data, ResultStatus.Success, statusCode)
+        public SuccessDataResult(T data, int resultCode) : base(data, ResultStatus.Success, resultCode)
         {
         }
 
@@ -20,16 +20,16 @@ namespace Core.Utilities.Results.Concrete
         {
         }
 
-        public SuccessDataResult(T data, int statusCode, string message) : base(data, ResultStatus.Success, statusCode, message)
+        public SuccessDataResult(T data, int resultCode, string message) : base(data, ResultStatus.Success, resultCode, message)
         {
         }
-        public SuccessDataResult(int statusCode) : base(default, ResultStatus.Success, statusCode)
+        public SuccessDataResult(int resultCode) : base(default, ResultStatus.Success, resultCode)
         {
         }
         public SuccessDataResult(string message) : base(default, ResultStatus.Success, message)
         {
         }
-        public SuccessDataResult(int statusCode, string message) : base(default, ResultStatus.Success, statusCode, message)
+        public SuccessDataResult(int resultCode, string message) : base(default, ResultStatus.Success, resultCode, message)
         {
         }
         public SuccessDataResult() : base(default, ResultStatus.Success)

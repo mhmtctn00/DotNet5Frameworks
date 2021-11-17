@@ -13,7 +13,7 @@ namespace Core.Utilities.Results.Concrete
         {
         }
 
-        public ErrorResult(int statusCode) : base(ResultStatus.Error, statusCode)
+        public ErrorResult(int resultCode) : base(ResultStatus.Error, resultCode)
         {
         }
 
@@ -21,7 +21,7 @@ namespace Core.Utilities.Results.Concrete
         {
         }
 
-        public ErrorResult(int statusCode, string message) : base(ResultStatus.Error, statusCode, message)
+        public ErrorResult(int resultCode, string message) : base(ResultStatus.Error, resultCode, message)
         {
         }
     }

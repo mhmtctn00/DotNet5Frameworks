@@ -12,14 +12,14 @@ namespace Core.Utilities.Results.Concrete
         public InfoResult() : base(ResultStatus.Info)
         {
         }
-        public InfoResult(int statusCode) : base(ResultStatus.Info, statusCode)
+        public InfoResult(int resultCode) : base(ResultStatus.Info, resultCode)
         {
         }
 
         public InfoResult(string message) : base(ResultStatus.Info, message)
         {
         }
-        public InfoResult(int statusCode, string message) : base(ResultStatus.Info, statusCode, message)
+        public InfoResult(int resultCode, string message) : base(ResultStatus.Info, resultCode, message)
         {
         }
     }
