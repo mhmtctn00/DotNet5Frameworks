@@ -96,11 +96,55 @@ namespace Core.DataAccess.Concrete.EntityFramework
             }
         }
 
+        public TEntity GetInOrderByDescending(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, dynamic>> orderByPredicate = null, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            using (TContext context = new TContext())
+            {
+                IQueryable<TEntity> query = context.Set<TEntity>();
+                if (orderByPredicate != null)
+                    query.OrderByDescending(orderByPredicate);
+                if (predicate != null)
+                {
+                    query = query.Where(predicate);
+                }
+                if (includeProperties.Any())
+                {
+                    foreach (var includeProperty in includeProperties)
+                    {
+                        query = query.Include(includeProperty);
+                    }
+                }
+                return query.FirstOrDefault();
+            }
+        }
+
         public IEnumerable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             using (TContext context = new TContext())
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
+                if (predicate != null)
+                {
+                    query = query.Where(predicate);
+                }
+                if (includeProperties.Any())
+                {
+                    foreach (var includeProperty in includeProperties)
+                    {
+                        query = query.Include(includeProperty);
+                    }
+                }
+                return query.ToList();
+            }
+        }
+
+        public IEnumerable<TEntity> GetListInOrderByDescending(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            using (TContext context = new TContext())
+            {
+                IQueryable<TEntity> query = context.Set<TEntity>();
+                if (orderByPredicate != null)
+                    query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -142,7 +186,8 @@ namespace Core.DataAccess.Concrete.EntityFramework
             using (TContext context = new TContext())
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
-                query.OrderByDescending(orderByPredicate);
+                if (orderByPredicate != null)
+                    query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -239,7 +284,28 @@ namespace Core.DataAccess.Concrete.EntityFramework
                         query = query.Include(includeProperty);
                     }
                 }
-                return await query.SingleOrDefaultAsync();
+                return await query.FirstOrDefaultAsync();
+            }
+        }
+        public async Task<TEntity> GetInOrderByDescendingAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, dynamic>> orderByPredicate = null, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            using (TContext context = new TContext())
+            {
+                IQueryable<TEntity> query = context.Set<TEntity>();
+                if (orderByPredicate != null)
+                    query.OrderByDescending(orderByPredicate);
+                if (predicate != null)
+                {
+                    query = query.Where(predicate);
+                }
+                if (includeProperties.Any())
+                {
+                    foreach (var includeProperty in includeProperties)
+                    {
+                        query = query.Include(includeProperty);
+                    }
+                }
+                return await query.FirstOrDefaultAsync();
             }
         }
 
@@ -248,6 +314,28 @@ namespace Core.DataAccess.Concrete.EntityFramework
             using (TContext context = new TContext())
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
+                if (predicate != null)
+                {
+                    query = query.Where(predicate);
+                }
+                if (includeProperties.Any())
+                {
+                    foreach (var includeProperty in includeProperties)
+                    {
+                        query = query.Include(includeProperty);
+                    }
+                }
+                return await query.ToListAsync();
+            }
+        }
+
+        public async Task<IEnumerable<TEntity>> GetListInOrderByDescendingAsync(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, dynamic>> orderByPredicate = null, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            using (TContext context = new TContext())
+            {
+                IQueryable<TEntity> query = context.Set<TEntity>();
+                if (orderByPredicate != null)
+                    query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -289,7 +377,8 @@ namespace Core.DataAccess.Concrete.EntityFramework
             using (TContext context = new TContext())
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
-                query.OrderByDescending(orderByPredicate);
+                if (orderByPredicate != null)
+                    query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
