@@ -1,4 +1,4 @@
-﻿using Core.Utilities.Helpers;
+﻿using Core.Utilities.HTTP;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,10 @@ namespace Core.Utilities.Membership.Google
             try
             {
                 var tokenInfoStr = HttpHelper.HttpGetRequest($"{verifyIdTokenUrl}{token}");
+                if (!tokenInfoStr.Contains("email"))
+                {
+                    tokenInfoStr = HttpHelper.HttpGetRequest($"{verifyIdTokenUrl.Replace("id_token", "access_token")}{token}");
+                }
                 var tokenInfoObj = JsonConvert.DeserializeObject<GoogleTokenInfo>(tokenInfoStr);
                 return tokenInfoObj;
             }
