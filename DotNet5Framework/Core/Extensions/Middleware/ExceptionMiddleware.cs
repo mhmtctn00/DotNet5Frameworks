@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Utilities.Results.Concrete;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Extensions.Middleware
+namespace Core.Extensions.Middlewares
 {
     public class ExceptionMiddleware
     {
@@ -34,17 +35,25 @@ namespace Core.Extensions.Middleware
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            string message = "Internal Server Error";
-            if (e.GetType() == typeof(ValidationException) || e.Message == "authorization_denied")
+            string message = "internal_server_error";
+
+            if (e.Message == "authorization_denied")
             {
+                httpContext.Response.StatusCode = 401;
+                return httpContext.Response.WriteAsync(new ErrorDetails
+                {
+                    StatusCode = 401,
+                    Message = e.Message
+                }.ToString());
+            }
+
+            if (e.GetType() == typeof(ValidationException))
+            {
+                httpContext.Response.StatusCode = 200;
                 message = e.Message;
             }
 
-            return httpContext.Response.WriteAsync(new ErrorDetails
-            {
-                StatusCode = httpContext.Response.StatusCode,
-                Message = message
-            }.ToString());
+            return httpContext.Response.WriteAsync(new ErrorResult(resultCode: 15963, message: message).ToString());
         }
     }
 }
