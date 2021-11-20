@@ -27,7 +27,7 @@ namespace Core.Extensions
                     bool propEquals = true;
                     foreach (var prop in props)
                     {
-                        if (!prop.GetValue(sourceItem).Equals(prop.GetValue(addedItem)))
+                        if (prop.GetValue(sourceItem) is not null && !prop.GetValue(sourceItem).Equals(prop.GetValue(addedItem)))
                             propEquals = false;
                     }
                     isEqual = propEquals;
