@@ -18,6 +18,10 @@ namespace Core.Extensions
             else
             {
                 bool isEqual = true;
+                if (source.Count == 0)
+                {
+                    source.Add(addedItem);
+                }
                 foreach (var sourceItem in source)
                 {
 
