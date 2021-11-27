@@ -150,18 +150,47 @@ namespace Core.Utilities.Helpers
         }
 
         public static string GetIpAddress()
-        {//Need to test without localhost.
-            Init();
-            var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
-
-            return ip.ToString();
+        {//TODO: Silmeyi unutma.
+            return "1.1.1.1";
+            try
+            {
+                Init();
+                var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+                return ip.ToString();
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
         }
-        public static int GetCurrentUserId()
-        {//Need to test without localhost.
+        public static int? GetCurrentUserId()
+        {//TODO: Silmeyi unutma.
+            return 4;
+            try
+            {
+                Init();
+                var id = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "name_identifier").Value;
+                return Convert.ToInt32(id);
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+        }
+        public static string GetCookie(string key)
+        {
             Init();
-            var id = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "name_identifier").Value;
-
-            return Convert.ToInt32(id);
+            return _httpContextAccessor.HttpContext.Request.Cookies[key];
+        }
+        public static void SetCookie(string key, string value, CookieOptions options)
+        {
+            Init();
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(key, value, options);
+        }
+        public static void RemoveCookie(string key)
+        {
+            Init();
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete(key);
         }
     }
 }
