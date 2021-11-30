@@ -102,7 +102,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
                 if (orderByPredicate != null)
-                    query.OrderByDescending(orderByPredicate);
+                    query = query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -144,7 +144,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
                 if (orderByPredicate != null)
-                    query.OrderByDescending(orderByPredicate);
+                    query = query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -176,7 +176,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
                         query = query.Include(includeProperty);
                     }
                 }
-                query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
+                query = query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
                 return query.ToList();
             }
         }
@@ -187,7 +187,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
                 if (orderByPredicate != null)
-                    query.OrderByDescending(orderByPredicate);
+                    query = query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -199,7 +199,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
                         query = query.Include(includeProperty);
                     }
                 }
-                query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
+                query = query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
                 return query.ToList();
             }
         }
@@ -293,7 +293,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
                 if (orderByPredicate != null)
-                    query.OrderByDescending(orderByPredicate);
+                    query = query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -335,7 +335,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
                 if (orderByPredicate != null)
-                    query.OrderByDescending(orderByPredicate);
+                    query = query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -367,7 +367,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
                         query = query.Include(includeProperty);
                     }
                 }
-                query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
+                query = query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
                 return await query.ToListAsync();
             }
         }
@@ -378,7 +378,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
             {
                 IQueryable<TEntity> query = context.Set<TEntity>();
                 if (orderByPredicate != null)
-                    query.OrderByDescending(orderByPredicate);
+                    query = query.OrderByDescending(orderByPredicate);
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
@@ -390,7 +390,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
                         query = query.Include(includeProperty);
                     }
                 }
-                query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
+                query = query.Skip((pageNumber * pageSize) - pageSize).Take(pageSize);
                 return await query.ToListAsync();
             }
         }
