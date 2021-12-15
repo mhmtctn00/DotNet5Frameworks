@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -157,6 +159,41 @@ namespace Core.Utilities.Helpers
                 Init();
                 var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
                 return ip.ToString();
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+        }
+        public static List<string> GetCurrentUserRoles()
+        {//Need to test without localhost.
+            try
+            {
+                Init();
+                var roles = _httpContextAccessor.HttpContext.User.Claims.Where(c => c.Type.Contains("role")).Select(c => c.Value).ToList();
+                return roles;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+        }
+        public static string GetCurrentUserToken()
+        {//Need to test without localhost.
+            try
+            {
+                Init();
+                _httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues token);
+                if (string.IsNullOrEmpty(token))
+                {
+                    _httpContextAccessor.HttpContext.Request.Query.TryGetValue("access_token", out token);
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        _httpContextAccessor.HttpContext.Request.Query.TryGetValue("token", out token);
+                    }
+                }
+                token = token.ToString().Replace("Bearer", "").Trim();
+                return token;
             }
             catch (System.Exception)
             {

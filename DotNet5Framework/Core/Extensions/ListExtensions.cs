@@ -91,5 +91,21 @@ namespace Core.Extensions
             }
             return items;
         }
+
+        public static string ToString(this List<string> source, string separator)
+        {
+            var str = "";
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                str += source[i];
+                if (i != source.Count - 1)
+                {
+                    str += separator;
+                }
+            }
+
+            return str;
+        }
     }
 }
