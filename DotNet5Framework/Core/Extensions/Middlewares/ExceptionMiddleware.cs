@@ -47,6 +47,16 @@ namespace Core.Extensions.Middlewares
                 }.ToString());
             }
 
+            if (e.Message == "logout")
+            {
+                httpContext.Response.StatusCode = 401;
+                return httpContext.Response.WriteAsync(new ErrorDetails
+                {
+                    StatusCode = 401,
+                    Message = e.Message
+                }.ToString());
+            }
+
             if (e.GetType() == typeof(ValidationException))
             {
                 httpContext.Response.StatusCode = 200;

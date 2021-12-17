@@ -50,7 +50,7 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
 
         protected Logger GetLogger()
         { // Create a Logger object that is provided by Serilog
-            if (_logger == null)
+            if (_logger is null)
             {
                 lock (_lock) // thread safe, singleton
                 {

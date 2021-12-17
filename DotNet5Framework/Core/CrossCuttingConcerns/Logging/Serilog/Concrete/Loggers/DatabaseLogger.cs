@@ -14,7 +14,7 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
         protected Logger GetLogger()
         {
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            string connectionString ="";
+            string connectionString = "";
 
             #region From AppSettings.json
             var configuration = new ConfigurationBuilder()
@@ -25,10 +25,10 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
             #endregion
 
             return new LoggerConfiguration().WriteTo
-                .MSSqlServer(connectionString: connectionString, tableName: "Logs", autoCreateSqlTable: true)
+                .MySQL(connectionString: connectionString, tableName: "Logs")
                 .CreateLogger();
         }
-       
+
 
         public override void Info(object logMessage) => GetLogger().Information(JsonConvert.SerializeObject(logMessage, settings));
 

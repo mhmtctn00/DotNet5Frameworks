@@ -51,7 +51,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
         {
             using (TContext context = new TContext())
             {
-                return (predicate == null ? context.Set<TEntity>().Count() : context.Set<TEntity>().Count(predicate));
+                return (predicate is null ? context.Set<TEntity>().Count() : context.Set<TEntity>().Count(predicate));
             }
         }
 
@@ -435,7 +435,7 @@ namespace Core.DataAccess.Concrete.EntityFramework
         {
             using (TContext context = new TContext())
             {
-                return (predicate == null ? await context.Set<TEntity>().CountAsync() : await context.Set<TEntity>().CountAsync(predicate));
+                return (predicate is null ? await context.Set<TEntity>().CountAsync() : await context.Set<TEntity>().CountAsync(predicate));
             }
         }
         #endregion

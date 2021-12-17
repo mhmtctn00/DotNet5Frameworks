@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Core.Extensions.Middlewares;
 using Microsoft.AspNetCore.Builder;
+using Core.Extensions.Middlewares;
 
 namespace Core.Extensions
 {

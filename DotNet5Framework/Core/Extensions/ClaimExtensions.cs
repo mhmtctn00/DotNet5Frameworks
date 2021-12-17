@@ -15,6 +15,11 @@ namespace Core.Extensions
             claims.Add(new Claim("email", email));
         }
 
+        public static void AddFullName(this ICollection<Claim> claims, string fullname)
+        {
+            claims.Add(new Claim("fullname", fullname));
+        }
+
         public static void AddFirstName(this ICollection<Claim> claims, string firstname)
         {
             claims.Add(new Claim("firstname", firstname));

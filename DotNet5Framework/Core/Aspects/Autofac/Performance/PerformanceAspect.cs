@@ -19,9 +19,9 @@ namespace Core.Aspects.Autofac.Performance
         FilePerformance _filePerformance = new FilePerformance();
 
         public PerformanceAspect(int interval)
-        {            
+        {
             _interval = interval;
-            _stopwatch = ServiceTool.ServiceProvider.GetService<Stopwatch>();            
+            _stopwatch = ServiceTool.ServiceProvider.GetService<Stopwatch>();
         }
 
 
@@ -32,18 +32,18 @@ namespace Core.Aspects.Autofac.Performance
         string className, methodName, time;
         protected override void OnAfter(IInvocation invocation)
         {
-           
+
             if (_stopwatch.Elapsed.TotalSeconds > _interval)
-            { 
+            {
                 Debug.WriteLine($"Performance : {invocation.TargetType.FullName}.{invocation.Method.Name}-->{_stopwatch.Elapsed.TotalSeconds}");
                 className = invocation.TargetType.FullName.ToString();
                 methodName = invocation.Method.Name.ToString();
                 time = _stopwatch.Elapsed.TotalSeconds.ToString();
                 //_databasePerformance.Add(className, methodName, time);
                 _filePerformance.WriteToPerformanceFile(className, methodName, time);
-            }            
+            }
             _stopwatch.Reset();
         }
-        
+
     }
 }

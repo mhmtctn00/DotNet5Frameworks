@@ -13,8 +13,13 @@ namespace Core.Extensions
         {
             foreach (var module in modules)
             {
-               module.Load(services); 
+                module.Load(services);
             }
+
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = "localhost:6379";
+            //});
 
             return ServiceTool.Create(services);
         }

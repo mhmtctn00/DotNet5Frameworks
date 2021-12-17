@@ -17,11 +17,11 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete
 
         public static DatabaseLogger DatabaseLogManager()
         {
-            if (_databaseLogger == null) // Double checked locking, singleton
+            if (_databaseLogger is null) // Double checked locking, singleton
             {
                 lock (_lock) // thread safe, singleton
                 {
-                    if (_databaseLogger == null)
+                    if (_databaseLogger is null)
                         _databaseLogger = new DatabaseLogger();
                 }
             }
@@ -30,11 +30,11 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete
 
         public static FileLogger FileLogManager()
         {
-            if (_fileLogger == null)
+            if (_fileLogger is null)
             {
                 lock (_lock)
                 {
-                    if (_fileLogger == null)
+                    if (_fileLogger is null)
                         _fileLogger = new FileLogger();
                 }
             }

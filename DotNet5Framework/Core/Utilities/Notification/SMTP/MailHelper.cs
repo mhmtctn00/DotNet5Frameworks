@@ -18,7 +18,6 @@ namespace Core.Utilities.Notification.SMTP
         private static NetworkCredential networkCredential = new NetworkCredential(from, fromPassword);
         public static void SendMail(List<string> tos, string subject, string body)
         {
-            return;
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient(smtpServer, smtpPort);
 
@@ -40,7 +39,6 @@ namespace Core.Utilities.Notification.SMTP
         }
         public static void SendMail(string to, string subject, string body)
         {
-            return;
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient(smtpServer, smtpPort);
 

@@ -27,7 +27,7 @@ namespace Core.CrossCuttingConcerns.Performance.File
         {
             const string quote = "\"";
             try
-            {                
+            {
                 lock (_locked)
                 {
                     using (FileStream fs = new FileStream(fileAddress, FileMode.Append, FileAccess.Write))

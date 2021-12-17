@@ -16,7 +16,7 @@ namespace Core.Utilities.Helpers
 
         static void Init()
         {
-            if (_httpContextAccessor == null)
+            if (_httpContextAccessor is null)
             {
                 lock (_lock)
                 {

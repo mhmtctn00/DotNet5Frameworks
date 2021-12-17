@@ -36,7 +36,7 @@ namespace Core.Utilities.Security.TwoFactorAuth.Google
 
         public SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, string accountSecretKey, int qrCodeWidth, int qrCodeHeight, bool useHttps)
         {
-            if (accountTitleNoSpaces == null) { throw new NullReferenceException("Account Title is null"); }
+            if (accountTitleNoSpaces is null) { throw new NullReferenceException("Account Title is null"); }
 
             accountTitleNoSpaces = accountTitleNoSpaces.Replace(" ", "");
 

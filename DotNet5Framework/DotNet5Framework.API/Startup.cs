@@ -2,6 +2,7 @@ using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.Utilities.IoC;
 using Core.Utilities.Security.Authorization;
+using Core.Utilities.Security.Authorization.JWT;
 using Core.Utilities.Security.Encyption;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -21,14 +22,12 @@ namespace DotNet5Framework.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, ITokenHelper tokenHelper)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            this.TokenHelper = tokenHelper;
         }
 
         public IConfiguration Configuration { get; }
-        public ITokenHelper TokenHelper { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -53,9 +52,9 @@ namespace DotNet5Framework.API
             #endregion
 
             #region Authentication Options
-            //var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            // var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //    .AddJwtBearer(options =>
             //    {
             //        options.TokenValidationParameters = new TokenValidationParameters
@@ -72,25 +71,25 @@ namespace DotNet5Framework.API
             //        {
             //            OnMessageReceived = context =>
             //            {
-            //                if (context.Request.Path.Value.StartsWith("/hub"))  // SignalR için
+            //                context.Request.Headers.TryGetValue("Authorization", out StringValues token);
+            //                if (string.IsNullOrEmpty(token))
             //                {
-            //                    context.Request.Headers.TryGetValue("Authorization", out StringValues token);
+            //                    context.Request.Query.TryGetValue("access_token", out token);
             //                    if (string.IsNullOrEmpty(token))
             //                    {
-            //                        context.Request.Query.TryGetValue("access_token", out token);
-            //                        if (string.IsNullOrEmpty(token))
-            //                        {
-            //                            context.Request.Query.TryGetValue("token", out token);
-            //                        }
+            //                        context.Request.Query.TryGetValue("token", out token);
             //                    }
-            //                    string tokenStr = token.ToString().Replace("Bearer", "").Trim();
-            //                    if (!TokenHelper.VerifyJWT(tokenStr))
-            //                    {
-            //                        context.Response.StatusCode = 401;
-            //                        return Task.CompletedTask;
-            //                    }
-            //                    context.Token = tokenStr;
             //                }
+            //                string tokenStr = token.ToString().Replace("Bearer", "").Trim();
+            //                if (!string.IsNullOrEmpty(tokenStr) && !context.Request.Path.Value.Contains("refreshtoken", System.StringComparison.CurrentCultureIgnoreCase) && !JwtHelper.VerifyJWT(tokenStr))
+            //                {
+            //                    return Task.FromException(new System.Exception("logout"));
+            //                }
+            //                if (!string.IsNullOrEmpty(tokenStr) && JwtHelper.IsClosed(tokenStr))
+            //                {
+            //                    return Task.FromException(new System.Exception("logout"));
+            //                }
+            //                context.Token = tokenStr;
             //                return Task.CompletedTask;
             //            },
             //            OnAuthenticationFailed = context =>
@@ -129,17 +128,17 @@ namespace DotNet5Framework.API
             options.DefaultFileNames.Add("index.html");
             app.UseDefaultFiles(options);
 
-            app.UseStaticFiles();
+            // app.UseStaticFiles();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
-                RequestPath = new Microsoft.AspNetCore.Http.PathString("/Images")
-            });
+            // app.UseStaticFiles(new StaticFileOptions
+            // {
+            //     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
+            //     RequestPath = new Microsoft.AspNetCore.Http.PathString("/Images")
+            // });
 
             app.UseRouting();
 
-            //app.UseAuthentication();  // Login iþlemi varsa
+            //app.UseAuthentication();  // Login iï¿½lemi varsa
 
             app.UseAuthorization();
 

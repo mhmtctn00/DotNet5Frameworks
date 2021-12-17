@@ -9,12 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.CrossCuttingConcerns.Caching.Microsoft
 {
-    public class MemoryCacheManager:ICacheManager
+    public class MemoryCacheManager : ICacheManager
     {
         private IMemoryCache _cache;
         public MemoryCacheManager()
         {
-           _cache =  ServiceTool.ServiceProvider.GetService<IMemoryCache>();
+            _cache = ServiceTool.ServiceProvider.GetService<IMemoryCache>();
         }
         public T Get<T>(string key)
         {

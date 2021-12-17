@@ -1,7 +1,5 @@
 ﻿using Core.Entities.Concrete;
 using Core.Extensions;
-using Core.Utilities.Results.Abstract;
-using Core.Utilities.Security.Authorization;
 using Core.Utilities.Security.Encyption;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -11,8 +9,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Utilities.Security.Authorization.JWT
 {
@@ -27,15 +23,18 @@ namespace Core.Utilities.Security.Authorization.JWT
             _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
             _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
         }
-
-        public AccessToken CreateToken(User user, List<Role> roles, bool rememberMe = false)
+        public AccessToken CreateToken(User user, List<Role> roles, bool refreshToken = true)
         {
             _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
-            var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, roles, rememberMe);
+            var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, roles);
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             var token = jwtSecurityTokenHandler.WriteToken(jwt);
+
+            if (refreshToken)
+                user.Session = GenerateRefreshToken();
+            user.SessionExpireDate = _accessTokenExpiration.AddMinutes(10);
 
             return new AccessToken
             {
@@ -44,34 +43,32 @@ namespace Core.Utilities.Security.Authorization.JWT
             };
         }
         public JwtSecurityToken CreateJwtSecurityToken(TokenOptions tokenOptions, User user,
-            SigningCredentials signingCredentials, List<Role> roles, bool rememberMe = false)
+            SigningCredentials signingCredentials, List<Role> roles)
         {
             var jwt = new JwtSecurityToken(
                 issuer: tokenOptions.Issuer,
                 audience: tokenOptions.Audience,
                 expires: _accessTokenExpiration,
                 notBefore: DateTime.Now, //tokenın expires bilgisi şuandan önce mi ?
-                claims: SetClaims(user, roles, rememberMe),
+                claims: SetClaims(user, roles),
                 signingCredentials: signingCredentials
             );
             return jwt;
         }
 
-        private IEnumerable<Claim> SetClaims(User user, List<Role> roles, bool rememberMe = false)
+        private IEnumerable<Claim> SetClaims(User user, List<Role> roles)
         {
             var claims = new List<Claim>();
             claims.AddNameIdentifier(user.Id.ToString());
             claims.AddEmail(user.Email);
-            claims.AddFirstName($"{user.FirstName}");
-            claims.AddLastName($"{user.LastName}");
-            claims.AddRememberMe($"{rememberMe}");
+            claims.AddFullName($"{user.FullName}");
             claims.AddRoles(roles.Select(c => c.RoleName).ToList());
 
             return claims;
         }
 
 
-        public Jwt GetJwt(string token)
+        public static Jwt GetJwt(string token)
         {
             token = token.Replace("Bearer", "").Trim();
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -106,7 +103,7 @@ namespace Core.Utilities.Security.Authorization.JWT
 
             return jwt;
         }
-        public bool VerifyJWT(string token)
+        public static bool VerifyJWT(string token)
         {
             token = token.Replace("Bearer", "").Trim();
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -125,11 +122,37 @@ namespace Core.Utilities.Security.Authorization.JWT
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
             };
-            var user = handler.ValidateToken(token, TokenValidationParameters, out SecurityToken validatedToken);
-
-            if (string.IsNullOrEmpty(user.Claims.FirstOrDefault(c => c.Type == "name_identifier")?.Value))
+            try
+            {
+                var user = handler.ValidateToken(token, TokenValidationParameters, out SecurityToken validatedToken);
+                if (string.IsNullOrEmpty(user.Claims.FirstOrDefault(c => c.Type == "name_identifier")?.Value))
+                    return false;
+                return true;
+            }
+            catch (System.Exception)
+            {
                 return false;
-            return true;
+            }
+        }
+        private static List<AccessToken> closedTokens = new List<AccessToken>();
+        public static bool IsClosed(string tokenStr) // true: closed, false: active
+        {
+            closedTokens.RemoveAll(x => x.Expiration < DateTime.UtcNow);
+            return closedTokens.Any(x => x.Token == tokenStr);
+        }
+        public static void CloseToken(string token)
+        {
+            var tokenObj = GetJwt(token);
+            closedTokens.Add(new AccessToken
+            {
+                Token = token,
+                Expiration = tokenObj.ExpireDate
+            });
+        }
+
+        private string GenerateRefreshToken()
+        {
+            return Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
         }
     }
 }
