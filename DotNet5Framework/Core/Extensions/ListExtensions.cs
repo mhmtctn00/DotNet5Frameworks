@@ -13,7 +13,6 @@ namespace Core.Extensions
             text.Trim();
             text = Regex.Replace(text, @"\s+", " ");
             var result = new List<T>();
-            var entityType = typeof(T);
 
             if (text.Contains(" "))
             {
