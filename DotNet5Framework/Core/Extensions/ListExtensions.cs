@@ -107,5 +107,13 @@ namespace Core.Extensions
 
             return str;
         }
+        public static IEnumerable<T> Map<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach (var item in source)
+            {
+                action(item);
+                yield return item;
+            }
+        }
     }
 }

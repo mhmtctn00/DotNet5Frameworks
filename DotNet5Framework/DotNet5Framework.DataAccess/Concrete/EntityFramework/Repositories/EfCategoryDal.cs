@@ -12,5 +12,8 @@ namespace DotNet5Framework.DataAccess.Concrete.EntityFramework.Repositories
 {
     public class EfCategoryDal : EfEntityRepositoryBase<Category, DotNet5FrameworkContext>, ICategoryDal
     {
+        public EfCategoryDal(DotNet5FrameworkContext context) : base(context)
+        {
+        }
     }
 }

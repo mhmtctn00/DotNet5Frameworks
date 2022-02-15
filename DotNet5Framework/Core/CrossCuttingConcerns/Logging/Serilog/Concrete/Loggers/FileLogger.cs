@@ -4,6 +4,11 @@ using System;
 using Serilog.Events;
 using Serilog.Core;
 using Newtonsoft.Json;
+using Core.Utilities.IoC;
+using Microsoft.Extensions.DependencyInjection;
+using Core.Utilities.Messages;
+using Microsoft.Extensions.Configuration;
+using Core.CrossCuttingConcerns.Logging.Serilog.ConfigurationModels;
 
 namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
 {
@@ -16,74 +21,20 @@ namespace Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers
         JsonSerializerSettings settings;
         public FileLogger()
         {
-            settings = new JsonSerializerSettings();
-            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            ControlDirectories(LogFolderPath);
+            var configuration = ServiceTool.ServiceProvider.GetService<IConfiguration>();
+            var logConfig = configuration.GetSection("SeriLogConfigurations:FileLogConfiguration")
+                                .Get<FileLogConfiguration>() ??
+                            throw new Exception(SerilogMessages.NullOptionsMessage);
+            var logFilePath = string.Format("{0}{1}", Directory.GetCurrentDirectory() + logConfig.FolderPath, ".txt");
+
+            Logger = new LoggerConfiguration()
+                .WriteTo.File(
+                    logFilePath,
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: null,
+                    fileSizeLimitBytes: 5000000,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}")
+                .CreateLogger();
         }
-
-        private static void ControlDirectories(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-                Console.WriteLine(path);
-            }
-
-            if (!Directory.Exists(path + @"\Error\"))
-            {
-                Directory.CreateDirectory(path + @"\Error\");
-                Console.WriteLine(path + @"\Error\");
-            }
-
-            if (!Directory.Exists(path + @"\Information\"))
-            {
-                Directory.CreateDirectory(path + @"\Information\");
-                Console.WriteLine(path + @"\Information\");
-            }
-
-            if (!Directory.Exists(path + @"\Other\"))
-            {
-                Directory.CreateDirectory(path + @"\Other\");
-                Console.WriteLine(path + @"\Other\");
-            }
-        }
-
-        protected Logger GetLogger()
-        { // Create a Logger object that is provided by Serilog
-            if (_logger is null)
-            {
-                lock (_lock) // thread safe, singleton
-                {
-                    _logger = new LoggerConfiguration()
-                                .WriteTo.Logger(lc => lc.Filter.ByIncludingOnly(error => error.Level == LogEventLevel.Error))
-                                .WriteTo.File(string.Format(@"{0}\Error\error-.log", LogFolderPath), LogEventLevel.Error, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, fileSizeLimitBytes: 5000000, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} | {Level}] {Message:lj}{NewLine}{Exception}")
-
-                                .WriteTo.Logger(lc => lc.Filter.ByIncludingOnly(info => info.Level == LogEventLevel.Information))
-                                .WriteTo.File(string.Format(@"{0}\Information\information-.log", LogFolderPath), LogEventLevel.Information, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, fileSizeLimitBytes: 5000000, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} | {Level}] {Message:lj}{NewLine}{Exception}")
-
-                                .WriteTo.Logger(lc => lc.Filter.ByExcluding(other => other.Level == LogEventLevel.Error || other.Level == LogEventLevel.Information))
-                                .WriteTo.File(string.Format(@"{0}\Other\other-.log", LogFolderPath), LogEventLevel.Warning, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, fileSizeLimitBytes: 5000000, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} | {Level}] {Message:lj}{NewLine}{Exception}")
-                                .CreateLogger();
-                    // LogEventLevel: Verbose < Debug < Information < Warning < Error < Fatal
-                }
-            }
-            return _logger;
-        }
-
-        /*
-         * The methods are filled according to FileLogger
-         */
-
-
-        public override void Info(object logMessage) => GetLogger().Information(JsonConvert.SerializeObject(logMessage, settings));
-
-        public override void Error(object logMessage) => GetLogger().Error(JsonConvert.SerializeObject(logMessage, settings));
-
-        public override void Fatal(object logMessage) => GetLogger().Fatal(JsonConvert.SerializeObject(logMessage, settings));
-
-        public override void Warning(object logMessage) => GetLogger().Warning(JsonConvert.SerializeObject(logMessage, settings));
-
-        public override void Debug(object logMessage) => GetLogger().Debug(JsonConvert.SerializeObject(logMessage, settings));
-
     }
 }

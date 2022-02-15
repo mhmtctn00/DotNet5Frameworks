@@ -4,6 +4,7 @@ using Core.Utilities.IoC;
 using Core.Utilities.Security.Authorization;
 using Core.Utilities.Security.Authorization.JWT;
 using Core.Utilities.Security.Encyption;
+using DotNet5Framework.DataAccess.Concrete.EntityFramework.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,7 @@ namespace DotNet5Framework.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DotNet5FrameworkContext>();
             services.AddControllers().AddNewtonsoftJson(options => // PM> Install-Package Microsoft.AspNetCore.Mvc.NewtonsoftJson
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -138,7 +140,7 @@ namespace DotNet5Framework.API
 
             app.UseRouting();
 
-            //app.UseAuthentication();  // Login i�lemi varsa
+            //app.UseAuthentication();
 
             app.UseAuthorization();
 

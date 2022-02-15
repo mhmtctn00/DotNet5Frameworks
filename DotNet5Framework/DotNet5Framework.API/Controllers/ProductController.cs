@@ -33,12 +33,5 @@ namespace DotNet5Framework.API.Controllers
             var result = _productService.Add(dto);
             return Ok(result);
         }
-
-        [HttpGet("TransactionTest")]
-        public IActionResult TransactionTest()
-        {
-            var result = _productService.TransactionTest();
-            return Ok(result);
-        }
     }
 }

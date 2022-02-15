@@ -6,6 +6,7 @@ using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Aspects.Autofac.Validation.FluentValidation;
 using Core.CrossCuttingConcerns.Logging.Serilog.Concrete.Loggers;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DotNet5Framework.Business.Abstract;
@@ -22,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace DotNet5Framework.Business.Concrete
 {
-    [ExceptionLogAspect(typeof(DatabaseLogger))]
+    [ExceptionLogAspect(typeof(MsSqlLogger))]
     public class ProductManager : IProductService
     {
         private readonly IProductDal _productDal;
@@ -35,63 +36,25 @@ namespace DotNet5Framework.Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductAddDtoValidator))]
-        [LogAspect(typeof(DatabaseLogger))]
+        [SuccessLogAspect(typeof(MsSqlLogger))]
         [CacheRemoveAspect("ProductManager.GetAll")]
-        public IResult Add(ProductAddDto dto)
+        public async Task<IResult> Add(ProductAddDto dto)
         {
             var addedProduct = _mapper.Map<ProductAddDto, Product>(dto);
-            _productDal.Add(addedProduct);
+            await _productDal.AddAsync(addedProduct);
+            await _productDal.SaveChangesAsync();
             return new SuccessResult();
         }
 
         [PerformanceAspect(5)]
         [CacheAspect()]
-        public IDataResult<IList<ProductGetDto>> GetAll()
+        public async Task<IDataResult<IList<ProductGetDto>>> GetAll()
         {
-            var productList = _productDal.GetList();
+            var productList = await _productDal.GetListAsync();
             //var x = 0;
             //var y = 8 / x;
             var productGetList = _mapper.Map<List<Product>, List<ProductGetDto>>(productList.ToList());
             return new SuccessDataResult<IList<ProductGetDto>>(productGetList);
-        }
-
-        [TransactionScopeAspect()]
-        public IResult TransactionTest()
-        {
-            _productDal.Add(new Product
-            {
-                Name = "Transaction Test Item 1",
-                CategoryId = 1,
-                Amount = 100,
-                Price = (decimal)10.0
-            });
-            _productDal.Add(new Product
-            {
-                Name = "Transaction Test Item 2",
-                CategoryId = 2,
-                Amount = 100,
-                Price = (decimal)10.0
-            });
-            _productDal.Add(new Product
-            {
-                Name = "Transaction Test Item 3",
-                CategoryId = 3,
-                Amount = 100,
-                Price = (decimal)10.0
-            });
-
-            var x = 0;
-            var y = 8 / x;
-
-            _productDal.Add(new Product
-            {
-                Name = "Transaction Test Item 4",
-                CategoryId = 4,
-                Amount = 100,
-                Price = (decimal)10.0
-            });
-
-            return new SuccessResult();
         }
     }
 }

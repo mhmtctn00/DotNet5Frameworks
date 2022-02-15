@@ -16,11 +16,6 @@ namespace Core.Extensions
                 module.Load(services);
             }
 
-            //services.AddStackExchangeRedisCache(options =>
-            //{
-            //    options.Configuration = "localhost:6379";
-            //});
-
             return ServiceTool.Create(services);
         }
     }

@@ -1,5 +1,4 @@
-﻿using Core.Utilities.Results.ComplexTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +8,8 @@ namespace Core.Utilities.Results.Abstract
 {
     public interface IResult
     {
-        ResultStatus Status { get; }
-        int ResultCode { get; }
+        bool Status { get; }
+        int StatusCode { get; }
         string Message { get; }
     }
 }

@@ -152,8 +152,7 @@ namespace Core.Utilities.Helpers
         }
 
         public static string GetIpAddress()
-        {//TODO: Silmeyi unutma.
-            return "1.1.1.1";
+        {
             try
             {
                 Init();
@@ -166,7 +165,7 @@ namespace Core.Utilities.Helpers
             }
         }
         public static List<string> GetCurrentUserRoles()
-        {//Need to test without localhost.
+        {
             try
             {
                 Init();
@@ -179,7 +178,7 @@ namespace Core.Utilities.Helpers
             }
         }
         public static string GetCurrentUserToken()
-        {//Need to test without localhost.
+        {
             try
             {
                 Init();
@@ -201,8 +200,7 @@ namespace Core.Utilities.Helpers
             }
         }
         public static int? GetCurrentUserId()
-        {//TODO: Silmeyi unutma.
-            return 4;
+        {
             try
             {
                 Init();

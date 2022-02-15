@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Transactions;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
+using Core.Utilities.Results.Abstract;
 
 namespace Core.Aspects.Autofac.Transaction
 {
@@ -11,19 +14,28 @@ namespace Core.Aspects.Autofac.Transaction
     {
         public override void Intercept(IInvocation invocation)
         {
-            using (TransactionScope transactionScope = new TransactionScope())
+            using (var transactionScope = new TransactionScope())
             {
                 try
                 {
                     invocation.Proceed();
                     transactionScope.Complete();
                 }
-                catch (System.Exception e)
+                catch (System.Exception ex)
                 {
-                    transactionScope.Dispose();
+                    ex.ToString();
                     throw;
                 }
             }
         }
+
+        public static bool IsAsyncMethod(MethodInfo method)
+        {
+            return (
+                method.ReturnType == typeof(Task) ||
+                (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+                );
+        }
+
     }
 }

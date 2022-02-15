@@ -1,7 +1,12 @@
 ﻿using Castle.DynamicProxy;
 using Core.CrossCuttingConcerns.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog;
 using Core.Utilities.Interceptors;
+using Core.Utilities.IoC;
 using Core.Utilities.Messages;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +18,7 @@ namespace Core.Aspects.Autofac.Logging
     public class SuccessLogAspect : MethodInterception
     {
         private LoggerServiceBase _loggerService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public SuccessLogAspect(Type loggerService)
         {
@@ -22,15 +28,16 @@ namespace Core.Aspects.Autofac.Logging
             }
 
             _loggerService = (LoggerServiceBase)Activator.CreateInstance(loggerService);
+            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
         }
         protected override void OnSuccess(IInvocation invocation)
         {
-            LogDetail logDetailWithException = GetLogDetail(invocation);
-            _loggerService.Info(logDetailWithException);
+            LogDetail logDetail = GetLogDetail(invocation);
+            _loggerService?.Info(JsonConvert.SerializeObject(logDetail));
         }
 
 
-        private LogDetailWithException GetLogDetail(IInvocation invocation)
+        private LogDetail GetLogDetail(IInvocation invocation)
         {
             var logParameters = new List<LogParameter>();
 
@@ -52,14 +59,18 @@ namespace Core.Aspects.Autofac.Logging
                     });
             }
 
-            var logDetailWithException = new LogDetailWithException
+            var logDetail = new LogDetail
             {
                 ClassName = invocation.TargetType.FullName,
                 MethodName = invocation.Method.Name,
-                LogParameters = logParameters
+                LogParameters = logParameters,
+                User = (_httpContextAccessor.HttpContext == null ||
+                        _httpContextAccessor.HttpContext.User.Identity.Name == null)
+                    ? "?"
+                    : _httpContextAccessor.HttpContext.User.Identity.Name
             };
 
-            return logDetailWithException;
+            return logDetail;
         }
     }
 }

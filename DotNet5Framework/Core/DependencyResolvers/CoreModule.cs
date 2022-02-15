@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Core.CrossCuttingConcerns.Caching;
 using Core.CrossCuttingConcerns.Caching.Microsoft;
-using Core.CrossCuttingConcerns.Caching.Redis;
 using Core.Utilities.IoC;
 using Core.Utilities.Security.Authorization;
 using Core.Utilities.Security.Authorization.JWT;
@@ -16,7 +15,6 @@ namespace Core.DependencyResolvers
         {
             services.AddMemoryCache();
             services.AddSingleton<ICacheManager, MemoryCacheManager>();
-            //services.AddSingleton<ICacheManager, DistributedCacheManager>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Stopwatch>();
             services.AddSingleton<ITokenHelper, JwtHelper>();

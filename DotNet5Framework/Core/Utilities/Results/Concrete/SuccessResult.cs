@@ -1,5 +1,4 @@
-﻿using Core.Utilities.Results.ComplexTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,19 +8,19 @@ namespace Core.Utilities.Results.Concrete
 {
     public class SuccessResult : Result
     {
-        public SuccessResult() : base(ResultStatus.Success)
+        public SuccessResult() : base(true)
         {
         }
 
-        public SuccessResult(int resultCode) : base(ResultStatus.Success, resultCode)
+        public SuccessResult(int statusCode) : base(true, statusCode)
         {
         }
 
-        public SuccessResult(string message) : base(ResultStatus.Success, message)
+        public SuccessResult(string message) : base(true, message)
         {
         }
 
-        public SuccessResult(int resultCode, string message) : base(ResultStatus.Success, resultCode, message)
+        public SuccessResult(int statusCode, string message) : base(true, statusCode, message)
         {
         }
     }

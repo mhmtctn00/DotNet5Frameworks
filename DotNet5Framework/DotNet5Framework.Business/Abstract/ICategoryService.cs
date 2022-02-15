@@ -10,7 +10,7 @@ namespace DotNet5Framework.Business.Abstract
 {
     public interface ICategoryService
     {
-        IDataResult<IList<CategoryGetDto>> GetAll();
-        IResult Add(CategoryAddDto dto);
+        Task<IDataResult<IList<CategoryGetDto>>> GetAll();
+        Task<IResult> Add(CategoryAddDto dto);
     }
 }

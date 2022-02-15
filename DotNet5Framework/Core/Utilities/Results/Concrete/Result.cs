@@ -1,5 +1,5 @@
 ﻿using Core.Utilities.Results.Abstract;
-using Core.Utilities.Results.ComplexTypes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,28 +10,31 @@ namespace Core.Utilities.Results.Concrete
 {
     public class Result : IResult
     {
-        public Result(ResultStatus status)
+        public Result(bool status)
         {
             Status = status;
         }
-        public Result(ResultStatus status, int resultCode)
+        public Result(bool status, int statusCode)
         {
             Status = status;
-            ResultCode = resultCode;
+            StatusCode = statusCode;
         }
-        public Result(ResultStatus status, string message) : this(status)
+        public Result(bool status, string message) : this(status)
         {
             Message = message;
         }
-        public Result(ResultStatus status, int resultCode, string message) : this(status, resultCode)
+        public Result(bool status, int statusCode, string message) : this(status, statusCode)
         {
             Message = message;
         }
 
-        public ResultStatus Status { get; }
-        public int ResultCode { get; } = 0;
+        public bool Status { get; }
+        public int StatusCode { get; }
         public string Message { get; }
 
-
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

@@ -63,7 +63,7 @@ namespace Core.Extensions.Middlewares
                 message = e.Message;
             }
 
-            return httpContext.Response.WriteAsync(new ErrorResult(resultCode: 15963, message: message).ToString());
+            return httpContext.Response.WriteAsync(new ErrorResult(statusCode: 15963, message: message).ToString());
         }
     }
 }

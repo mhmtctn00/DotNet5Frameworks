@@ -24,16 +24,17 @@ namespace DotNet5Framework.Business.Concrete
             _mapper = mapper;
         }
 
-        public IResult Add(CategoryAddDto dto)
+        public async Task<IResult> Add(CategoryAddDto dto)
         {
             var addedCategory = _mapper.Map<CategoryAddDto, Category>(dto);
-            _categoryDal.Add(addedCategory);
+            await _categoryDal.AddAsync(addedCategory);
+            await _categoryDal.SaveChangesAsync();
             return new SuccessResult();
         }
 
-        public IDataResult<IList<CategoryGetDto>> GetAll()
+        public async Task<IDataResult<IList<CategoryGetDto>>> GetAll()
         {
-            var categoryList = _categoryDal.GetList();
+            var categoryList = await _categoryDal.GetListAsync();
             var categoryGetList = _mapper.Map<List<Category>, List<CategoryGetDto>>(categoryList.ToList());
             return new SuccessDataResult<IList<CategoryGetDto>>(categoryGetList);
         }

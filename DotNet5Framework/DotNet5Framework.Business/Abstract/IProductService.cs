@@ -10,8 +10,7 @@ namespace DotNet5Framework.Business.Abstract
 {
     public interface IProductService
     {
-        IDataResult<IList<ProductGetDto>> GetAll();
-        IResult Add(ProductAddDto dto);
-        IResult TransactionTest();
+        Task<IDataResult<IList<ProductGetDto>>> GetAll();
+        Task<IResult> Add(ProductAddDto dto);
     }
 }

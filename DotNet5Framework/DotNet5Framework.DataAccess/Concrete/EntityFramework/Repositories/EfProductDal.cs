@@ -12,5 +12,8 @@ namespace DotNet5Framework.DataAccess.Concrete.EntityFramework.Repositories
 {
     public class EfProductDal : EfEntityRepositoryBase<Product, DotNet5FrameworkContext>, IProductDal
     {
+        public EfProductDal(DotNet5FrameworkContext context) : base(context)
+        {
+        }
     }
 }

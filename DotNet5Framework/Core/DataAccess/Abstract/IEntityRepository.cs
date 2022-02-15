@@ -24,6 +24,7 @@ namespace Core.DataAccess.Abstract
         IEnumerable<T> DeleteRange(IList<T> entityList);
         bool Any(Expression<Func<T, bool>> predicate = null);
         int Count(Expression<Func<T, bool>> predicate = null);
+        public int SaveChanges();
         #endregion
 
         #region Async Methods
@@ -41,6 +42,9 @@ namespace Core.DataAccess.Abstract
         Task<IEnumerable<T>> DeleteRangeAsync(IList<T> entityList);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate = null);
         Task<int> CountAsync(Expression<Func<T, bool>> predicate = null);
+        public Task<int> SaveChangesAsync();
         #endregion
+
+        public IQueryable<T> Query();
     }
 }
