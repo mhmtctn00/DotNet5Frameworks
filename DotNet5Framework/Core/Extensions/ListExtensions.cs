@@ -1,95 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Core.Extensions
 {
     public static class ListExtensions
     {
-        public static void AddDifferentOne<T>(this List<T> source, T addedItem)
+        public static List<T> Search<T>(this List<T> source, string propertyName, string text, int count = 10, bool ignoreCaseSensivity = false) where T : IEquatable<T>
         {
-            if (typeof(T).IsValueType)
+            text.Trim();
+            text = Regex.Replace(text, @"\s+", " ");
+            var result = new List<T>();
+            var entityType = typeof(T);
+
+            if (text.Contains(" "))
             {
-                if (!source.Contains(addedItem))
-                {
-                    source.Add(addedItem);
-                }
+                //TODO: Eğer iki veya daha fazla kelimeden oluşan bir sorgu gelirse, verileri parçalamadan bütün olarak değerlendirir.
+                // İki kelime gelirse verileri ikili guruplara ayırarak arama yapabiliriz.
+
+                result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Equals(text, ignoreCaseSensivity ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().StartsWith(text, ignoreCaseSensivity ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Contains(text, ignoreCaseSensivity ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().EqualsWithLevenshteinDistance(text, 1, ignoreCaseSensivity)).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().StartsWithLevenshteinDistance(text, 1, ignoreCaseSensivity)).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().ContainsWithLevenshteinDistance(text, 1, ignoreCaseSensivity)).Take(count - result.Count).ToList());
             }
             else
             {
-                bool isEqual = true;
-                if (source.Count == 0)
-                {
-                    source.Add(addedItem);
-                }
-                foreach (var sourceItem in source)
-                {
+                result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Split(" ").Any(y => y.Equals(text, ignoreCaseSensivity ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))).Take(count - result.Count).ToList());
 
-                    Type type = sourceItem.GetType();
-                    PropertyInfo[] props = type.GetProperties();
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Split(" ").Any(y => y.StartsWith(text, ignoreCaseSensivity ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))).Take(count - result.Count).ToList());
 
-                    bool propEquals = true;
-                    foreach (var prop in props)
-                    {
-                        if (prop.GetValue(sourceItem) is not null && !prop.GetValue(sourceItem).Equals(prop.GetValue(addedItem)))
-                            propEquals = false;
-                    }
-                    isEqual = propEquals;
-                    if (propEquals)
-                        break;
-                }
-                if (!isEqual)
-                {
-                    source.Add(addedItem);
-                }
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Split(" ").Any(y => y.Contains(text, ignoreCaseSensivity ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Split(" ").Any(y => y.EqualsWithLevenshteinDistance(text, 1, ignoreCaseSensivity))).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Split(" ").Any(y => y.StartsWithLevenshteinDistance(text, 1, ignoreCaseSensivity))).Take(count - result.Count).ToList());
+
+                if (result.Count < count)
+                    result.AddRange(source.Where(t => !result.Any(x => x.Equals(t)) && t.GetType().GetProperty(propertyName).GetValue(t, null).ToString().Split(" ").Any(y => y.ContainsWithLevenshteinDistance(text, 1, ignoreCaseSensivity))).Take(count - result.Count).ToList());
             }
+
+            return result;
         }
-
-        public static void AddDifferentOnes<T>(this List<T> source, List<T> addedCollection)
+        public static void AddDifferentOne<T>(this List<T> source, T addedItem) where T : IEquatable<T>
         {
-            foreach (var item in addedCollection)
-            {
-                source.AddDifferentOne(item);
-            }
+            if (!source.Any(s => s.Equals(addedItem)))
+                source.Add(addedItem);
         }
-
-        public static List<T> ToListWithoutTheSameOnes<T>(this List<T> source)
+        public static void AddDifferentOnes<T>(this List<T> source, List<T> addedCollection) where T : IEquatable<T>
         {
-            List<T> items = new List<T>();
-            if (typeof(T).IsValueType)
-            {
-                foreach (var sourceItem in source)
-                {
-                    if (!items.Contains(sourceItem))
-                    {
-                        items.Add(sourceItem);
-                    }
-                }
-            }
-            else
-            {
-                foreach (var sourceItem in source)
-                {
-                    bool isEqual = true;
-                    if (items.Count > 0)
-                        foreach (var item in items)
-                        {
-                            Type type = item.GetType();
-                            PropertyInfo[] props = type.GetProperties();
-
-                            foreach (var prop in props)
-                            {
-                                if (prop.GetValue(sourceItem) is not null && prop.GetValue(sourceItem).Equals(prop.GetValue(item)))
-                                    isEqual = false;
-                            }
-                        }
-                    if (isEqual)
-                    {
-                        items.Add(sourceItem);
-                    }
-                }
-            }
-            return items;
+            var col = addedCollection.Where(a => !source.Any(s => s.Equals(a)));
+            if (col.Count() > 0)
+                source.AddRange(col);
         }
 
         public static string ToString(this List<string> source, string separator)
@@ -107,6 +86,7 @@ namespace Core.Extensions
 
             return str;
         }
+
         public static IEnumerable<T> Map<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (var item in source)

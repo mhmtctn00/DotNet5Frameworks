@@ -72,7 +72,7 @@ namespace Core.Extensions
 
             for (int i = 0; i < source.Length; i++)
             {
-                if (i + size >= source.Length)
+                if (i + size > source.Length)
                     break;
                 strList.Add(source.Substring(i, size));
             }
@@ -80,12 +80,63 @@ namespace Core.Extensions
             return strList;
         }
 
-        public static bool ContainsWithLevenshteinDistance(this string source, string wanted, int wantedValue = 0)
+        public static bool EqualsWithLevenshteinDistance(this string source, string wanted, int wantedValue = 0, bool ignoreCaseSensivity = true)
         {
             if (string.IsNullOrEmpty(wanted))
                 return false;
-            source = source.ToLower();
-            wanted = wanted.ToLower();
+            if (ignoreCaseSensivity)
+            {
+                source = source.ToLower();
+                wanted = wanted.ToLower();
+            }
+            if (source.Length != wanted.Length)
+            {
+                return false;
+            }
+
+            int distance = source.FindLevenshteinDistance(wanted);
+            if (wantedValue >= distance)
+                return true;
+
+            return false;
+        }
+
+        public static bool StartsWithLevenshteinDistance(this string source, string wanted, int wantedValue = 0, bool ignoreCaseSensivity = true)
+        {
+            if (string.IsNullOrEmpty(wanted))
+                return false;
+            if (ignoreCaseSensivity)
+            {
+                source = source.ToLower();
+                wanted = wanted.ToLower();
+            }
+            if (source.Length == wanted.Length)
+            {
+                int distance = source.FindLevenshteinDistance(wanted);
+                if (wantedValue >= distance)
+                    return true;
+            }
+
+            if (source.Length > wanted.Length)
+            {
+                var strList = source.SeparateBySize(wanted.Length);
+                int distance = strList[0].FindLevenshteinDistance(wanted);
+                if (wantedValue >= distance)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool ContainsWithLevenshteinDistance(this string source, string wanted, int wantedValue = 0, bool ignoreCaseSensivity = true)
+        {
+            if (string.IsNullOrEmpty(wanted))
+                return false;
+            if (ignoreCaseSensivity)
+            {
+                source = source.ToLower();
+                wanted = wanted.ToLower();
+            }
             if (source.Length == wanted.Length)
             {
                 int distance = source.FindLevenshteinDistance(wanted);
@@ -129,6 +180,5 @@ namespace Core.Extensions
 
             return resp;
         }
-
     }
 }
