@@ -20,17 +20,17 @@ namespace DotNet5Framework.API.Controllers
             _productService = productService;
         }
 
-        [HttpGet("GetAll")]
-        public IActionResult GettAll()
+        [HttpGet]
+        public async Task<IActionResult> GettAll()
         {
-            var result = _productService.GetAll();
+            var result = await _productService.GetAllAsync();
             return Ok(result);
         }
 
-        [HttpPost("Add")]
-        public IActionResult Add(ProductAddDto dto)
+        [HttpPost]
+        public async Task<IActionResult> Add(ProductAddDto dto)
         {
-            var result = _productService.Add(dto);
+            var result = await _productService.AddAsync(dto);
             return Ok(result);
         }
     }

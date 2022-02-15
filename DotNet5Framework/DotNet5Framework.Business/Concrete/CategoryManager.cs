@@ -24,7 +24,7 @@ namespace DotNet5Framework.Business.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IResult> Add(CategoryAddDto dto)
+        public async Task<IResult> AddAsync(CategoryAddDto dto)
         {
             var addedCategory = _mapper.Map<CategoryAddDto, Category>(dto);
             await _categoryDal.AddAsync(addedCategory);
@@ -32,7 +32,7 @@ namespace DotNet5Framework.Business.Concrete
             return new SuccessResult();
         }
 
-        public async Task<IDataResult<IList<CategoryGetDto>>> GetAll()
+        public async Task<IDataResult<IList<CategoryGetDto>>> GetAllAsync()
         {
             var categoryList = await _categoryDal.GetListAsync();
             var categoryGetList = _mapper.Map<List<Category>, List<CategoryGetDto>>(categoryList.ToList());

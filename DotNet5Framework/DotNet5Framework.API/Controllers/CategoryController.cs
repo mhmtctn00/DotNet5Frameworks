@@ -20,17 +20,17 @@ namespace DotNet5Framework.API.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var result = _categoryService.GetAll();
+            var result = await _categoryService.GetAllAsync();
             return Ok(result);
         }
 
-        [HttpGet("Add")]
-        public IActionResult Add(CategoryAddDto dto)
+        [HttpPost]
+        public async Task<IActionResult> Add(CategoryAddDto dto)
         {
-            var result = _categoryService.Add(dto);
+            var result = await _categoryService.AddAsync(dto);
             return Ok(result);
         }
     }

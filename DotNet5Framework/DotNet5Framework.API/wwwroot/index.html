@@ -16,7 +16,7 @@
 <script>
     function GetProducts() {
         $.ajax({
-            type: "get", url: "https://localhost:44301/api/Product/GetAll",
+            type: "get", url: "https://localhost:44301/api/Product",
             success: function (data, text) {
                 console.log("Successful: " + JSON.stringify(data));
             },
@@ -27,7 +27,7 @@
     }
     function GetCategories() {
         $.ajax({
-            type: "get", url: "https://localhost:44301/api/Category/GetAll",
+            type: "get", url: "https://localhost:44301/api/Category",
             success: function (data, text) {
                 console.log("Successful: " + JSON.stringify(data));
             },

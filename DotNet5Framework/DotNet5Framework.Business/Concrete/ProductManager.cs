@@ -38,7 +38,7 @@ namespace DotNet5Framework.Business.Concrete
         [ValidationAspect(typeof(ProductAddDtoValidator))]
         [SuccessLogAspect(typeof(MsSqlLogger))]
         [CacheRemoveAspect("ProductManager.GetAll")]
-        public async Task<IResult> Add(ProductAddDto dto)
+        public async Task<IResult> AddAsync(ProductAddDto dto)
         {
             var addedProduct = _mapper.Map<ProductAddDto, Product>(dto);
             await _productDal.AddAsync(addedProduct);
@@ -48,7 +48,7 @@ namespace DotNet5Framework.Business.Concrete
 
         [PerformanceAspect(5)]
         [CacheAspect()]
-        public async Task<IDataResult<IList<ProductGetDto>>> GetAll()
+        public async Task<IDataResult<IList<ProductGetDto>>> GetAllAsync()
         {
             var productList = await _productDal.GetListAsync();
             //var x = 0;
