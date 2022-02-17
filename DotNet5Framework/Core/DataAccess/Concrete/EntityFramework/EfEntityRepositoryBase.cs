@@ -677,9 +677,9 @@ namespace Core.DataAccess.Concrete.EntityFramework
             return (predicate is null ? await Context.Set<TEntity>().CountAsync() : await Context.Set<TEntity>().CountAsync(predicate));
         }
 
-        public Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            return Context.SaveChangesAsync();
+            return await Context.SaveChangesAsync();
         }
         #endregion
         #endregion
