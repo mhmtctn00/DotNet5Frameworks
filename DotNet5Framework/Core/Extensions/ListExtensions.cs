@@ -94,5 +94,23 @@ namespace Core.Extensions
                 yield return item;
             }
         }
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            if (source == null) return new List<TSource>();
+            if (keySelector == null) return source;
+
+            return Distinct();
+
+            IEnumerable<TSource> Distinct()
+            {
+                var knownKeys = new HashSet<TKey>();
+
+                foreach (var element in source)
+                {
+                    if (knownKeys.Add(keySelector(element)))
+                        yield return element;
+                }
+            }
+        }
     }
 }
