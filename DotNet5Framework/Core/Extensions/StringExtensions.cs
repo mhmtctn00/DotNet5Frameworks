@@ -180,5 +180,32 @@ namespace Core.Extensions
 
             return resp;
         }
+        public static string ToMask(this string word, char maskBy, int visibleCharCount, char seperator = ' ')
+        {
+            if (!string.IsNullOrWhiteSpace(word))
+            {
+                var seperatedValue = word.Split(seperator);
+
+                if (seperatedValue is null || !seperatedValue.Any())
+                {
+                    return word;
+                }
+
+                var maskedStrings = new List<string>();
+
+                foreach (var value in seperatedValue)
+                {
+                    var visibleChars = value.Substring(0, visibleCharCount);
+                    var maskedChars = new string(maskBy, value.Length - visibleCharCount);
+                    var maskedString = string.Concat(visibleChars, maskedChars);
+
+                    maskedStrings.Add(maskedString);
+                }
+
+                word = string.Join(seperator, maskedStrings);
+            }
+
+            return word;
+        }
     }
 }
